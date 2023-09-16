@@ -17,8 +17,8 @@
     <packaging>pom</packaging>
 
     <modules>
-        <module>osm</module>
-        <module>database</module>
+        <module>osm-pump</module>
+        <module>data-supplier</module>
     </modules>
 
     <properties>
