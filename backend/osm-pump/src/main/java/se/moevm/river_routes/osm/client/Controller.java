@@ -10,12 +10,18 @@ import se.moevm.river_routes.osm.model.OsmResponse;
 public class Controller {
 
     private final OSMFeignClient OSMFeignClient;
+    private final GeographicalNamesConfig geographicalNamesConfig;
 
     @Scheduled(initialDelay = 3000, fixedDelay = 120000)
     void schedule() {
         System.out.println("dasdsdsads!!!");
-        OsmResponse response = OSMFeignClient.getRiverNodes("Нева");
 
-        System.out.println(response.toString());
+        geographicalNamesConfig.getRivers().forEach(name -> {
+            System.out.println("???? " + name);
+            OsmResponse response = OSMFeignClient.getRiverNodes(name);
+
+            System.out.println(response.toString());
+        });
+
     }
 }
