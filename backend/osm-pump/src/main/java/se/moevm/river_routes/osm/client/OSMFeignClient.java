@@ -13,9 +13,9 @@ public interface OSMFeignClient {
     OsmResponse getRiverNodes(@PathVariable String river);
 
     @RequestMapping(method = RequestMethod.GET, value = "?data={query}")
-    String getNodes(@PathVariable String query);
+    OsmResponse getNodes(@PathVariable String query);
 
-    default String getPierNodes() {
+    default OsmResponse getPierNodes() {
         return getNodes("[out:json];nwr[man_made=pier](around:15000,59.940049,30.328738);out geom;");
     }
 }
