@@ -1,32 +1,41 @@
 package se.moevm.river_routes.osm.entity;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
+import lombok.ToString;
 import org.springframework.data.neo4j.core.schema.GeneratedValue;
 import org.springframework.data.neo4j.core.schema.Id;
 import org.springframework.data.neo4j.core.schema.Node;
 import org.springframework.data.neo4j.core.schema.Property;
 import org.springframework.data.neo4j.core.schema.Relationship;
 
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
-@Builder
-@AllArgsConstructor
 @Getter
+@ToString(exclude = "neighbours")
 @Node("Water")
 public class WaterNode implements StorableNode {
 
     @Id
     @GeneratedValue
-    private final Long id;
+    private Long id;
 
     @Relationship(type = "DIRECT_WAY", direction = Relationship.Direction.OUTGOING)
-    private final List<WaterNode> neighbours;
+    private final Set<WaterNode> neighbours = new HashSet<>();
 
     @Property("lat")
     private final Double lat;
 
     @Property("lon")
     private final Double lon;
+
+    public WaterNode(Double lat, Double lon) {
+        this.lat = lat;
+        this.lon = lon;
+    }
+
+    public void addNeighbour(WaterNode node) {
+        neighbours.add(node);
+    }
 }
