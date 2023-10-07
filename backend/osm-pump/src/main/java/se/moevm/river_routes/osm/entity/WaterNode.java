@@ -21,8 +21,14 @@ public class WaterNode implements StorableNode {
     @GeneratedValue
     private Long id;
 
-    @Relationship(type = "DIRECT_WAY", direction = Relationship.Direction.OUTGOING)
+    @Relationship(type = "WATER_WAY", direction = Relationship.Direction.OUTGOING)
     private final Set<WaterNode> neighbours = new HashSet<>();
+
+    @Relationship(type = "PIER_WAY", direction = Relationship.Direction.OUTGOING)
+    private final Set<PierNode> piers = new HashSet<>();
+
+    @Relationship(type = "SIGHT_OBSERVE", direction = Relationship.Direction.OUTGOING)
+    private final Set<SightNode> sights = new HashSet<>();
 
     @Property("lat")
     private final Double lat;
@@ -37,5 +43,13 @@ public class WaterNode implements StorableNode {
 
     public void addNeighbour(WaterNode node) {
         neighbours.add(node);
+    }
+
+    public void addPier(PierNode node) {
+        piers.add(node);
+    }
+
+    public void addSight(SightNode node) {
+        sights.add(node);
     }
 }
