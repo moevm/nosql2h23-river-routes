@@ -18,4 +18,8 @@ public interface OSMFeignClient {
     default OsmResponse getPierNodes() {
         return getNodes("[out:json];nwr[man_made=pier](around:15000,59.940049,30.328738);out geom;");
     }
+
+    default OsmResponse getSightNodes() {
+        return getNodes("[out:json];nwr[tourism=attraction](around:15000,59.940049,30.328738);out geom;");
+    }
 }
