@@ -1,9 +1,6 @@
 package se.moevm.river_routes.osm.entity;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.neo4j.core.schema.GeneratedValue;
 import org.springframework.data.neo4j.core.schema.Id;
@@ -17,7 +14,7 @@ import java.util.List;
 @RequiredArgsConstructor
 @Getter
 @Node("Pier")
-public class PierNode implements StorableNode {
+public class PierNode implements Node2D {
 
     @Id
     @GeneratedValue

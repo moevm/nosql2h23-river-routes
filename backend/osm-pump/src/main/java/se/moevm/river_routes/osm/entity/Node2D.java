@@ -1,6 +1,6 @@
 package se.moevm.river_routes.osm.entity;
 
-public interface StorableNode {
+public interface Node2D {
 
     Double getLat();
 

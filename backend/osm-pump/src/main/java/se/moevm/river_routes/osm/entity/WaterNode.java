@@ -1,6 +1,5 @@
 package se.moevm.river_routes.osm.entity;
 
-import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.ToString;
 import org.springframework.data.neo4j.core.schema.GeneratedValue;
@@ -15,7 +14,7 @@ import java.util.Set;
 @Getter
 @ToString(exclude = "neighbours")
 @Node("Water")
-public class WaterNode implements StorableNode {
+public class WaterNode implements Node2D {
 
     @Id
     @GeneratedValue

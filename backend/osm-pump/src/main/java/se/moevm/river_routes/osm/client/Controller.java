@@ -46,6 +46,8 @@ public class Controller {
         waterRepository.saveAll(waterNodes);
         pierRepository.saveAll(pierNodes);
         sightRepository.saveAll(sightNodes);
+
+        System.out.println("done.");
     }
 
     double distance(double x1, double y1, double x2, double y2) {
