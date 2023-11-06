@@ -1,11 +1,26 @@
 import React, {useEffect, useRef, useState} from "react";
 import {useDebounce} from "@src/utils/useDebounce";
 import PopularRoute from "./components/PopularRoute";
-import {makeStyles} from "@material-ui/core";
-
+import { Box, Button, makeStyles } from "@material-ui/core";
+import ArrowBackIcon from '@material-ui/icons/ArrowBack';
+import ArrowForwardIcon from '@material-ui/icons/ArrowForward';
 export const useStyles = makeStyles((theme) => ({
   container: {
     position: "relative",
+
+    width: "100%",
+
+  },
+  list: {
+    display: "flex",
+    flexDirection: "row",
+    justifyContent: "space-between",
+    listStyle: "none",
+    overflowX: "auto",
+    paddingBottom: "2rem",
+  },
+  element: {
+    marginRight: "100px",
   }
 }));
 
@@ -17,6 +32,7 @@ export const PopularRoutesSpin = () => {
   const classes = useStyles();
   const checkForScrollPosition = () => {
     const { current } = listRef;
+    console.log(current)
     if (current) {
       const { scrollLeft, scrollWidth, clientWidth } = current;
       setCanScrollLeft(scrollLeft > 0);
@@ -32,17 +48,18 @@ export const PopularRoutesSpin = () => {
   useEffect(() => {
     const { current } = listRef;
     checkForScrollPosition();
-    current?.addEventListener("scroll", debounceCheckForScrollPosition);
+    current?.addEventListener("scroll", checkForScrollPosition);
 
     return () => {
-      current?.removeEventListener("scroll", debounceCheckForScrollPosition);
+      current?.removeEventListener("scroll", checkForScrollPosition);
       debounceCheckForScrollPosition.cancel();
     };
   }, []);
 
-  return <div className={classes.container}>
-    <ul ref={listRef}>
-      <li>
+  return <Box display={"flex"} flexDirection={"column"} width={"100%"}>
+  <div className={classes.container}>
+    <ul ref={listRef} className={classes.list}>
+      <li className={classes.element}>
         <PopularRoute image={null}
           title={"Ещё какое-то название"}
           description={"Главный водный путь, проходящий через какой-то там мост мимо афигеть какой интересной  достопримечательности."}
@@ -50,7 +67,7 @@ export const PopularRoutesSpin = () => {
           spent_time={"2ч"}
           length={"15км"}/>
       </li>
-      <li>
+      <li className={classes.element}>
         <PopularRoute image={null}
           title={"Ещё какое-то название"}
           description={"Главный водный путь, проходящий через какой-то там мост мимо афигеть какой интересной  достопримечательности."}
@@ -58,7 +75,7 @@ export const PopularRoutesSpin = () => {
           spent_time={"2ч"}
           length={"15км"}/>
       </li>
-      <li>
+      <li className={classes.element}>
         <PopularRoute image={null}
           title={"Ещё какое-то название"}
           description={"Главный водный путь, проходящий через какой-то там мост мимо афигеть какой интересной  достопримечательности."}
@@ -66,7 +83,7 @@ export const PopularRoutesSpin = () => {
           spent_time={"2ч"}
           length={"15км"}/>
       </li>
-      <li>
+      <li className={classes.element}>
         <PopularRoute image={null}
           title={"Ещё какое-то название"}
           description={"Главный водный путь, проходящий через какой-то там мост мимо афигеть какой интересной  достопримечательности."}
@@ -74,6 +91,17 @@ export const PopularRoutesSpin = () => {
           spent_time={"2ч"}
           length={"15км"}/>
       </li>
+
     </ul>
-  </div>;
+  </div>
+    {canScrollRight || canScrollLeft ?
+    <div style={{display: "flex", width: "100%", justifyContent: "end"}}>
+      <Button disabled={!canScrollLeft} onClick={()=>scrollContainerBy(-400)}>
+        <ArrowBackIcon/>
+      </Button>
+      <Button disabled={!canScrollRight} onClick={()=>scrollContainerBy(400)}>
+      <ArrowForwardIcon/>
+      </Button>
+    </div> : null}
+  </Box>
 };

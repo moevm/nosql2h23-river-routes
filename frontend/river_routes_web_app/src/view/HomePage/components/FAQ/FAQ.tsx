@@ -1,6 +1,7 @@
 import React from "react";
 import {Box, makeStyles} from "@material-ui/core";
 import {FaqAccordion} from "./components/FaqAccordion";
+import FaqImage from "@src/images/home_page_images/faq_image.png";
 
 export const useStyles = makeStyles((theme) => ({
   root: {
@@ -35,7 +36,7 @@ export const FAQ = () => {
       </Box>
     </Box>
     <Box>
-      <div style={{width: "542px", height: "652px", backgroundColor: "grey"}}>
+      <div style={{width: "542px", height: "652px", backgroundImage: `url(${FaqImage})`}}>
 
       </div>
     </Box>
