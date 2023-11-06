@@ -1,6 +1,6 @@
 import React from "react";
 import {Box, Grid, makeStyles, Theme} from "@material-ui/core";
-
+import DescrImage from "@src/images/home_page_images/descr_image.png"
 export const useStyles = makeStyles((theme: Theme)=> ({
   title: {
     fontSize: "40px",
@@ -49,7 +49,7 @@ export const Description = () => {
 
           <p>А что если взглянуть на все эти места с нового места - с воды? Не важно, живешь ты в Питере всю свою жизнь или это твой первый день - мы поделимся с тобой водными маршрутами, которые точно не оставят тебя равнодушным и смогут показать Питер с совершенно новой стороны.</p>
         </div>
-        <div style={{backgroundColor: "grey", width: "700px", height: "265px"}}/>
+        <div style={{backgroundImage: `url(${DescrImage})`, width: "700px", height: "265px"}}/>
       </Box>
       <Grid container spacing={1} style={{display: "flex", height: "50%"}} justifyContent={"center"} alignItems={"center"}>
         <Grid item md={12} lg={12} style={{padding: 0, width: "100px"}}>

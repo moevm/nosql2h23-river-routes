@@ -12,6 +12,11 @@ root.render(
   <RiverRoutesApp/>
 );
 
+// @ts-ignore
+if(module.hot){
+  // @ts-ignore
+  module.hot.accept();
+}
 
 // If you want to start measuring performance in your app, pass a function
 // to log results (for example: reportWebVitals(console.log))
