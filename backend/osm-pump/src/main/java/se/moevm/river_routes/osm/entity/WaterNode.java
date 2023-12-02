@@ -2,6 +2,7 @@ package se.moevm.river_routes.osm.entity;
 
 import lombok.Getter;
 import lombok.ToString;
+import org.neo4j.driver.util.Immutable;
 import org.springframework.data.neo4j.core.schema.GeneratedValue;
 import org.springframework.data.neo4j.core.schema.Id;
 import org.springframework.data.neo4j.core.schema.Node;
@@ -13,6 +14,7 @@ import java.util.Set;
 
 @Getter
 @ToString(exclude = "neighbours")
+@Immutable
 @Node("Water")
 public class WaterNode implements Node2D {
 

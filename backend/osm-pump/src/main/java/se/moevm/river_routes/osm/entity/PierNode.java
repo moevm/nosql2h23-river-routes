@@ -2,6 +2,7 @@ package se.moevm.river_routes.osm.entity;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import org.neo4j.driver.util.Immutable;
 import org.springframework.data.neo4j.core.schema.GeneratedValue;
 import org.springframework.data.neo4j.core.schema.Id;
 import org.springframework.data.neo4j.core.schema.Node;
@@ -13,6 +14,7 @@ import java.util.List;
 
 @RequiredArgsConstructor
 @Getter
+@Immutable
 @Node("Pier")
 public class PierNode implements Node2D {
 

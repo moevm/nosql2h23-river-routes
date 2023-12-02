@@ -27,7 +27,7 @@ public class Controller {
     private static final double SIGHT_OBSERVATION_THRESHOLD = 0.002;
 
     @Scheduled(initialDelay = 3000, fixedDelay = 120000)
-    void schedule() { //todo single transaction
+    void schedule() {
         System.out.println("!!!rivers: " + geographicalNamesConfig.getRivers());
 
         List<WaterNode> waterNodes = getAllWater();
