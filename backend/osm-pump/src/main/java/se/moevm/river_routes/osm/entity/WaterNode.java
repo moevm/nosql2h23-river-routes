@@ -9,7 +9,9 @@ import org.springframework.data.neo4j.core.schema.Node;
 import org.springframework.data.neo4j.core.schema.Property;
 import org.springframework.data.neo4j.core.schema.Relationship;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Getter
@@ -23,7 +25,7 @@ public class WaterNode implements Node2D {
     private Long id;
 
     @Relationship(type = "WATER_WAY", direction = Relationship.Direction.OUTGOING)
-    private final Set<WaterNode> neighbours = new HashSet<>();
+    private final List<WaterWay> neighbours = new ArrayList<>();
 
     @Relationship(type = "PIER_WAY", direction = Relationship.Direction.OUTGOING)
     private final Set<PierNode> piers = new HashSet<>();
@@ -43,7 +45,7 @@ public class WaterNode implements Node2D {
     }
 
     public void addNeighbour(WaterNode node) {
-        neighbours.add(node);
+        neighbours.add(new WaterWay(node, getRange(node)));
     }
 
     public void addPier(PierNode node) {
@@ -52,5 +54,9 @@ public class WaterNode implements Node2D {
 
     public void addSight(SightNode node) {
         sights.add(node);
+    }
+
+    double getRange(WaterNode node) {
+        return Math.sqrt(Math.pow(node.getLat() - this.lat, 2) + Math.pow(node.getLon() - this.lon, 2));
     }
 }
