@@ -34,15 +34,17 @@ public class Controller {
 
         System.out.println(waterNodes);
         System.out.println("calculated size " + waterNodes.size());
+        System.out.println("!!!!!!!!!!!!!");
 
         linkWaterNodes(waterNodes);
+        System.out.println("!!!!!!!!!!!!!");
 
         List<PierNode> pierNodes = getAllPierces();
         linkPierWithWater(pierNodes, waterNodes);
 
         List<SightNode> sightNodes = getAllSights();
         linkSightWithWater(sightNodes, waterNodes);
-
+        System.out.println("!!!!!!!!!!!!!");
         waterRepository.saveAll(waterNodes);
         pierRepository.saveAll(pierNodes);
         sightRepository.saveAll(sightNodes);

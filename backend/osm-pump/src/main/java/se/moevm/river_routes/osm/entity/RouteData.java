@@ -1,9 +1,6 @@
 package se.moevm.river_routes.osm.entity;
 
-import lombok.Builder;
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
-import org.neo4j.driver.util.Immutable;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.neo4j.core.schema.GeneratedValue;
 import org.springframework.data.neo4j.core.schema.Id;
@@ -17,9 +14,6 @@ import java.util.List;
 
 @Getter
 @Node("Route")
-@Builder
-@Immutable
-@RequiredArgsConstructor
 public class RouteData {
 
     @Id
@@ -47,4 +41,13 @@ public class RouteData {
 
     @Property("calculator")
     private final String calculator;
+
+    public RouteData(PierNode start, PierNode finish, OffsetDateTime createdAt, Long lengthMeters, String title, String calculator) {
+        this.start = start;
+        this.finish = finish;
+        this.createdAt = createdAt;
+        this.lengthMeters = lengthMeters;
+        this.title = title;
+        this.calculator = calculator;
+    }
 }
