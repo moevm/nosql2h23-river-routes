@@ -1,6 +1,7 @@
 package se.moevm.river_routes.osm.client;
 
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.web.bind.annotation.RestController;
 import se.moevm.river_routes.osm.entity.PierNode;
@@ -10,10 +11,12 @@ import se.moevm.river_routes.osm.repository.PierRepository;
 import se.moevm.river_routes.osm.repository.SightRepository;
 import se.moevm.river_routes.osm.repository.WaterRepository;
 
+import java.time.OffsetDateTime;
 import java.util.List;
 
 @RestController
 @AllArgsConstructor
+@Slf4j
 public class Controller {
 
     private final OSMFeignClient feignClient;
@@ -28,28 +31,32 @@ public class Controller {
 
     @Scheduled(initialDelay = 3000, fixedDelay = 120000)
     void schedule() {
-        System.out.println("!!!rivers: " + geographicalNamesConfig.getRivers());
+        waterRepository.deleteAll();
+        sightRepository.deleteAll();
+        pierRepository.deleteAll();
 
         List<WaterNode> waterNodes = getAllWater();
-
-        System.out.println(waterNodes);
-        System.out.println("calculated size " + waterNodes.size());
-        System.out.println("!!!!!!!!!!!!!");
-
+        log.info("found {} water nodes", waterNodes.size());
         linkWaterNodes(waterNodes);
-        System.out.println("!!!!!!!!!!!!!");
+        log.info("water nodes linked");
 
         List<PierNode> pierNodes = getAllPierces();
+        log.info("found {} pier nodes", pierNodes.size());
         linkPierWithWater(pierNodes, waterNodes);
+        log.info("pier nodes linked");
 
         List<SightNode> sightNodes = getAllSights();
+        log.info("found {} sight nodes", sightNodes.size());
         linkSightWithWater(sightNodes, waterNodes);
-        System.out.println("!!!!!!!!!!!!!");
+        log.info("sight nodes linked");
+
+        log.info("saving...");
         waterRepository.saveAll(waterNodes);
         pierRepository.saveAll(pierNodes);
         sightRepository.saveAll(sightNodes);
+        log.info("saved");
 
-        System.out.println("done.");
+        waterRepository.findAll().forEach(x -> System.out.println(x.toString()));
     }
 
     double distance(double x1, double y1, double x2, double y2) {
@@ -57,50 +64,58 @@ public class Controller {
     }
 
     List<WaterNode> getAllWater() {
-
         return geographicalNamesConfig.getRivers().stream()
                 .flatMap(river -> feignClient.getRiverNodes(river).getElements().stream())
                 .filter(x -> x.getMembers() != null)
                 .flatMap(x -> x.getMembers().stream())
                 .flatMap(x -> x.getGeometry().stream())
                 .distinct()
-                .map(x -> new WaterNode(x.getLat(), x.getLon()))
+                .map(x -> WaterNode.builder()
+                        .lat(x.getLat())
+                        .lon(x.getLon())
+                        .build()
+                )
                 .toList();
     }
 
     List<PierNode> getAllPierces() {
-
         return feignClient.getPierNodes().getElements().stream()
                 .filter(x -> x.getMembers() != null)
                 .flatMap(x -> x.getMembers().stream())
                 .flatMap(x -> x.getGeometry().stream())
                 .distinct()
-                .map(x -> new PierNode(x.getLat(), x.getLon()))
+                .map(x -> PierNode.builder()
+                        .lat(x.getLat())
+                        .lon(x.getLon())
+                        .build()
+                )
                 .toList();
     }
 
     List<SightNode> getAllSights() {
-
         return feignClient.getSightNodes().getElements().stream()
                 .filter(x -> x.getMembers() != null)
                 .flatMap(x -> x.getMembers().stream())
                 .flatMap(x -> x.getGeometry().stream())
                 .distinct()
-                .map(x -> new SightNode("stub", x.getLat(), x.getLon()))
+                .map(x -> SightNode.builder()
+                        .title("name")
+                        .lat(x.getLat())
+                        .lon(x.getLon())
+                        .wikiLink("http://en.wikipedia.org/wiki/")
+                        .updatedAt(OffsetDateTime.now())
+                        .build()
+                )
                 .toList();
     }
 
     void linkWaterNodes(List<WaterNode> waterNodes) {
-
         for (int i = 0; i < waterNodes.size(); i++) {
             var node1 = waterNodes.get(i);
             for (int j = i; j < waterNodes.size(); j++) {
-
                 var node2 = waterNodes.get(j);
-
                 if (i != j && distance(node1.getLat(), node1.getLon(),
                         node2.getLat(), node2.getLon()) <= WATER_DISTANCE_THRESHOLD) {
-
                     node1.addNeighbour(node2);
                     node2.addNeighbour(node1);
                 }
@@ -109,16 +124,12 @@ public class Controller {
     }
 
     void linkPierWithWater(List<PierNode> pierNodes, List<WaterNode> waterNodes) {
-
         for (int i = 0; i < waterNodes.size(); i++) {
             var water = waterNodes.get(i);
             for (int j = 0; j < pierNodes.size(); j++) {
-
                 var pier = pierNodes.get(j);
-
                 if (i != j && distance(water.getLat(), water.getLon(),
                         pier.getLat(), pier.getLon()) <= PIER_DISTANCE_THRESHOLD) {
-
                     water.addPier(pier);
                     pier.addNeighbour(water);
                 }

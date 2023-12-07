@@ -1,8 +1,6 @@
 package se.moevm.river_routes.osm.entity;
 
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.*;
 import org.neo4j.driver.util.Immutable;
 import org.springframework.data.neo4j.core.schema.GeneratedValue;
 import org.springframework.data.neo4j.core.schema.Id;
@@ -14,26 +12,17 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Getter
+@Setter
+@Builder
+@AllArgsConstructor
 @ToString(exclude = "neighbours")
 @Immutable
 @Node("Water")
-public class WaterNode implements Node2D {
+public class WaterNode {
 
     @Id
     @GeneratedValue
     private Long id;
-
-    @Setter
-    @Relationship(type = "WATER_WAY", direction = Relationship.Direction.OUTGOING)
-    private List<WaterWay> neighbours = new ArrayList<>();
-
-    @Setter
-    @Relationship(type = "PIER_WAY", direction = Relationship.Direction.OUTGOING)
-    private List<PierNode> piers = new ArrayList<>();
-
-    @Setter
-    @Relationship(type = "SIGHT_OBSERVE", direction = Relationship.Direction.OUTGOING)
-    private List<SightNode> sights = new ArrayList<>();
 
     @Property("lat")
     private final Double lat;
@@ -41,21 +30,20 @@ public class WaterNode implements Node2D {
     @Property("lon")
     private final Double lon;
 
-    public WaterNode(Double lat, Double lon) {
-        this.lat = lat;
-        this.lon = lon;
-    }
+    @Relationship(type = "WATER_WAY", direction = Relationship.Direction.OUTGOING)
+    private final List<WaterWay> neighbours = new ArrayList<>();
 
-    public WaterNode(Double lat, Double lon, List<SightNode> sighs, List<PierNode> piers, List<WaterWay> waterWays) {
-        this.lat = lat;
-        this.lon = lon;
-        this.sights = sighs;
-        this.piers = piers;
-        this.neighbours = waterWays;
-    }
+    @Relationship(type = "PIER_WAY", direction = Relationship.Direction.OUTGOING)
+    private final List<PierNode> piers = new ArrayList<>();
+
+    @Relationship(type = "SIGHT_OBSERVE", direction = Relationship.Direction.OUTGOING)
+    private final List<SightNode> sights = new ArrayList<>();
 
     public void addNeighbour(WaterNode node) {
-        neighbours.add(new WaterWay(node, getRange(node)));
+        neighbours.add(WaterWay.builder()
+                        .node(node)
+                        .length(getRange(node))
+                        .build());
     }
 
     public void addPier(PierNode node) {

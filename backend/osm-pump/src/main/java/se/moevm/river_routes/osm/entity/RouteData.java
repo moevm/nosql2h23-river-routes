@@ -1,6 +1,8 @@
 package se.moevm.river_routes.osm.entity;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.Setter;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.neo4j.core.schema.GeneratedValue;
 import org.springframework.data.neo4j.core.schema.Id;
@@ -13,6 +15,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Getter
+@Setter
+@AllArgsConstructor
 @Node("Route")
 public class RouteData {
 
@@ -20,16 +24,6 @@ public class RouteData {
     @GeneratedValue
     private Long id;
 
-    @Relationship(type = "STARTS_AT", direction = Relationship.Direction.OUTGOING)
-    private final PierNode start;
-
-    @Relationship(type = "FINISH_AT", direction = Relationship.Direction.OUTGOING)
-    private final PierNode finish;
-
-    @Relationship(type = "OBSERVES", direction = Relationship.Direction.OUTGOING)
-    private final List<SightNode> observables = new ArrayList<>();
-
-    @CreatedDate
     @Property("created_at")
     private final OffsetDateTime createdAt;
 
@@ -42,12 +36,13 @@ public class RouteData {
     @Property("calculator")
     private final String calculator;
 
-    public RouteData(PierNode start, PierNode finish, OffsetDateTime createdAt, Long lengthMeters, String title, String calculator) {
-        this.start = start;
-        this.finish = finish;
-        this.createdAt = createdAt;
-        this.lengthMeters = lengthMeters;
-        this.title = title;
-        this.calculator = calculator;
-    }
+    @Relationship(type = "STARTS_AT", direction = Relationship.Direction.OUTGOING)
+    private final PierNode start;
+
+    @Relationship(type = "FINISH_AT", direction = Relationship.Direction.OUTGOING)
+    private final PierNode finish;
+
+    @Relationship(type = "OBSERVES", direction = Relationship.Direction.OUTGOING)
+    private final List<SightNode> observables = new ArrayList<>();
+
 }
