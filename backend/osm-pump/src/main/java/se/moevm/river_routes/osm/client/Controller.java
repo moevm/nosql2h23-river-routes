@@ -12,6 +12,7 @@ import se.moevm.river_routes.osm.repository.SightRepository;
 import se.moevm.river_routes.osm.repository.WaterRepository;
 
 import java.time.OffsetDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -56,7 +57,7 @@ public class Controller {
         sightRepository.saveAll(sightNodes);
         log.info("saved");
 
-        waterRepository.findAll().forEach(x -> System.out.println(x.toString()));
+        pierRepository.getPiers().forEach(x -> System.out.println(x.toString()));
     }
 
     double distance(double x1, double y1, double x2, double y2) {
@@ -116,6 +117,12 @@ public class Controller {
                 var node2 = waterNodes.get(j);
                 if (i != j && distance(node1.getLat(), node1.getLon(),
                         node2.getLat(), node2.getLon()) <= WATER_DISTANCE_THRESHOLD) {
+                    if (node1.getNeighbours() == null) {
+                        node1.setNeighbours(new ArrayList<>());
+                    }
+                    if (node2.getNeighbours() == null) {
+                        node2.setNeighbours(new ArrayList<>());
+                    }
                     node1.addNeighbour(node2);
                     node2.addNeighbour(node1);
                 }
@@ -128,6 +135,9 @@ public class Controller {
             var water = waterNodes.get(i);
             for (int j = 0; j < pierNodes.size(); j++) {
                 var pier = pierNodes.get(j);
+                if (pier.getNeighbours() == null) {
+                    pier.setNeighbours(new ArrayList<>());
+                }
                 if (i != j && distance(water.getLat(), water.getLon(),
                         pier.getLat(), pier.getLon()) <= PIER_DISTANCE_THRESHOLD) {
                     water.addPier(pier);

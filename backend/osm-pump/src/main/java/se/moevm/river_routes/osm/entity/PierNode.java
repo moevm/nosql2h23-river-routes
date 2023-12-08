@@ -1,6 +1,11 @@
 package se.moevm.river_routes.osm.entity;
 
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
 import org.neo4j.driver.util.Immutable;
 import org.springframework.data.neo4j.core.schema.GeneratedValue;
 import org.springframework.data.neo4j.core.schema.Id;
@@ -8,7 +13,6 @@ import org.springframework.data.neo4j.core.schema.Node;
 import org.springframework.data.neo4j.core.schema.Property;
 import org.springframework.data.neo4j.core.schema.Relationship;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @AllArgsConstructor
@@ -16,6 +20,7 @@ import java.util.List;
 @Setter
 @Builder
 @Immutable
+@ToString
 @Node("Pier")
 public class PierNode {
 
@@ -29,10 +34,12 @@ public class PierNode {
     @Property("lon")
     private final Double lon;
 
+    @Setter
     @Relationship(type = "DIRECT_WAY", direction = Relationship.Direction.OUTGOING)
-    private final List<WaterNode> neighbours = new ArrayList<>();
+    private List<WaterNode> neighbours;
 
     public void addNeighbour(WaterNode node) {
         neighbours.add(node);
     }
+
 }

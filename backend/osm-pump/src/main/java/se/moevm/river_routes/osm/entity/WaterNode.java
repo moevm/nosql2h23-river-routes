@@ -15,7 +15,8 @@ import java.util.List;
 @Setter
 @Builder
 @AllArgsConstructor
-@ToString(exclude = "neighbours")
+@RequiredArgsConstructor
+@ToString(exclude = {"neighbours", "piers"})
 @Immutable
 @Node("Water")
 public class WaterNode {
@@ -31,13 +32,13 @@ public class WaterNode {
     private final Double lon;
 
     @Relationship(type = "WATER_WAY", direction = Relationship.Direction.OUTGOING)
-    private final List<WaterWay> neighbours = new ArrayList<>();
+    private List<WaterWay> neighbours = new ArrayList<>();
 
     @Relationship(type = "PIER_WAY", direction = Relationship.Direction.OUTGOING)
-    private final List<PierNode> piers = new ArrayList<>();
+    private List<PierNode> piers = new ArrayList<>();
 
     @Relationship(type = "SIGHT_OBSERVE", direction = Relationship.Direction.OUTGOING)
-    private final List<SightNode> sights = new ArrayList<>();
+    private List<SightNode> sights = new ArrayList<>();
 
     public void addNeighbour(WaterNode node) {
         neighbours.add(WaterWay.builder()
