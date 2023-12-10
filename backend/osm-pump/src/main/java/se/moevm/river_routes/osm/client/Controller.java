@@ -59,7 +59,8 @@ public class Controller {
         sightRepository.saveAll(sightNodes);
         log.info("saved");
 
-        waterRepository.getWaters().forEach(x -> System.out.println(x.toString()));
+        var rr = waterRepository.getPath();
+        System.out.println(rr);
     }
 
     double distance(double x1, double y1, double x2, double y2) {
