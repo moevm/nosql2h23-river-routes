@@ -26,10 +26,10 @@ public class WaterNode {
     private Long id;
 
     @Property("lat")
-    private final Double lat;
+    private Double lat;
 
     @Property("lon")
-    private final Double lon;
+    private Double lon;
 
     @Relationship(type = "WATER_WAY", direction = Relationship.Direction.OUTGOING)
     private List<WaterWay> neighbours = new ArrayList<>();
@@ -52,6 +52,9 @@ public class WaterNode {
     }
 
     public void addSight(SightNode node) {
+        if (sights == null) {
+            sights = new ArrayList<>();
+        }
         sights.add(node);
     }
 

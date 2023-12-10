@@ -1,6 +1,7 @@
 package se.moevm.river_routes.osm.client;
 
 import lombok.AllArgsConstructor;
+import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.web.bind.annotation.RestController;
@@ -30,6 +31,7 @@ public class Controller {
     private static final double PIER_DISTANCE_THRESHOLD = 0.001;
     private static final double SIGHT_OBSERVATION_THRESHOLD = 0.002;
 
+    @SneakyThrows
     @Scheduled(initialDelay = 3000, fixedDelay = 120000)
     void schedule() {
         waterRepository.deleteAll();
@@ -57,7 +59,7 @@ public class Controller {
         sightRepository.saveAll(sightNodes);
         log.info("saved");
 
-        pierRepository.getPiers().forEach(x -> System.out.println(x.toString()));
+        waterRepository.getWaters().forEach(x -> System.out.println(x.toString()));
     }
 
     double distance(double x1, double y1, double x2, double y2) {
@@ -66,7 +68,7 @@ public class Controller {
 
     List<WaterNode> getAllWater() {
         return geographicalNamesConfig.getRivers().stream()
-                .flatMap(river -> feignClient.getRiverNodes(river).getElements().stream())
+                .flatMap(river -> feignClient.getRiverNodes("Нева").getElements().stream())
                 .filter(x -> x.getMembers() != null)
                 .flatMap(x -> x.getMembers().stream())
                 .flatMap(x -> x.getGeometry().stream())
@@ -140,6 +142,10 @@ public class Controller {
                 }
                 if (i != j && distance(water.getLat(), water.getLon(),
                         pier.getLat(), pier.getLon()) <= PIER_DISTANCE_THRESHOLD) {
+                    System.out.println("good****");
+                    if (water.getPiers() == null) {
+                        water.setPiers(new ArrayList<>());
+                    }
                     water.addPier(pier);
                     pier.addNeighbour(water);
                 }
@@ -157,7 +163,9 @@ public class Controller {
 
                 if (i != j && distance(water.getLat(), water.getLon(),
                         sight.getLat(), sight.getLon()) <= SIGHT_OBSERVATION_THRESHOLD) {
-
+                    if (water.getSights() == null) {
+                        water.setSights(new ArrayList<>());
+                    }
                     water.addSight(sight);
                     sight.addObservationFromWater(water);
                 }

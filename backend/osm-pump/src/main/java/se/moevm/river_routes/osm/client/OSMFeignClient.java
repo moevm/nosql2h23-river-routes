@@ -22,4 +22,7 @@ public interface OSMFeignClient {
     default OsmResponse getSightNodes() {
         return getNodes("[out:json];nwr[tourism=attraction](around:15000,59.940049,30.328738);out geom;");
     }
+
+    @RequestMapping(method = RequestMethod.GET, value = "?data=[out:json];rel[name=\"{river}\"]->.river;.river out geom;nwr(around.river:50)[power=plant][\"plant:source\"=hydro](area);out center;")
+    String getRiverNodesRU(@PathVariable String river);
 }

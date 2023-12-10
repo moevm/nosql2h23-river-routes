@@ -10,6 +10,7 @@ import java.util.List;
 @Repository
 public interface PierRepository extends Neo4jRepository<PierNode, Long> {
 
-    @Query("MATCH (n) RETURN n")
+    @Query("MATCH (n:Pier) RETURN n")
     List<PierNode> getPiers();
+
 }
