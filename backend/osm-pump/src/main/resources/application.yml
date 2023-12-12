@@ -1,5 +1,0 @@
-spring:
-  neo4j:
-    authentication:
-      username: "neo4j"
-      password: "password"

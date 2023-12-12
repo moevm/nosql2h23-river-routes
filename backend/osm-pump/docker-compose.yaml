@@ -1,9 +1,9 @@
 version: '3.5'
 
 services:
-  db_noe4j:
+  db_neo4j:
     image: neo4j:4.3.6
-    container_name: db_routes1
+    container_name: osm_pump
     ports:
       - "7474:7474"
       - "7687:7687"
