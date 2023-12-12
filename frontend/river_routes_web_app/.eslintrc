@@ -1,5 +1,6 @@
 {
   "parser": "@typescript-eslint/parser",
+
   "parserOptions": {
     "ecmaVersion": 2020,
     "sourceType": "module",
@@ -20,17 +21,13 @@
     "@typescript-eslint/interface-name-prefix": "off",
     "@typescript-eslint/explicit-function-return-type": "off",
     "@typescript-eslint/no-explicit-any": "off",
-    "@typescript-eslint/camelcase": "off", // TODO Remove
-    "@typescript-eslint/no-var-requires": "off", // TODO Remove
     "@typescript-eslint/no-use-before-define": "off", // TODO change to warning
     "no-restricted-syntax": 0,
     "import/extensions": "off",
-    "no-console": "off", // TODO change to warning
+    "no-console": "warn", // TODO change to warning
     "react-hooks/exhaustive-deps": "off",
     "no-alert": "off",
     "radix": ["error", "as-needed"],
-    "import/no-cycle": "off", // TODO Remove
-    "no-loop-func": "off", // TODO Remove
     "class-methods-use-this": "off",
     "no-nested-ternary": "off"
   },

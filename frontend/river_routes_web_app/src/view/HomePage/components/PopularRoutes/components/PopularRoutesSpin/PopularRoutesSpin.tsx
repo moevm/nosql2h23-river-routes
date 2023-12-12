@@ -1,15 +1,14 @@
-import React, {useEffect, useRef, useState} from "react";
-import {useDebounce} from "@src/utils/useDebounce";
+import React, { useEffect, useRef, useState } from "react";
+import { useDebounce } from "@src/utils/useDebounce";
 import PopularRoute from "./components/PopularRoute";
 import { Box, Button, makeStyles } from "@material-ui/core";
-import ArrowBackIcon from '@material-ui/icons/ArrowBack';
-import ArrowForwardIcon from '@material-ui/icons/ArrowForward';
+import ArrowBackIcon from "@material-ui/icons/ArrowBack";
+import ArrowForwardIcon from "@material-ui/icons/ArrowForward";
 export const useStyles = makeStyles((theme) => ({
   container: {
     position: "relative",
 
     width: "100%",
-
   },
   list: {
     display: "flex",
@@ -21,7 +20,7 @@ export const useStyles = makeStyles((theme) => ({
   },
   element: {
     marginRight: "100px",
-  }
+  },
 }));
 
 export const PopularRoutesSpin = () => {
@@ -32,7 +31,7 @@ export const PopularRoutesSpin = () => {
   const classes = useStyles();
   const checkForScrollPosition = () => {
     const { current } = listRef;
-    console.log(current)
+    console.log(current);
     if (current) {
       const { scrollLeft, scrollWidth, clientWidth } = current;
       setCanScrollLeft(scrollLeft > 0);
@@ -42,8 +41,7 @@ export const PopularRoutesSpin = () => {
 
   const debounceCheckForScrollPosition = useDebounce(checkForScrollPosition, 200);
 
-  const scrollContainerBy = (distance: number) =>
-    listRef.current?.scrollBy({ left: distance, behavior: "smooth" });
+  const scrollContainerBy = (distance: number) => listRef.current?.scrollBy({ left: distance, behavior: "smooth" });
 
   useEffect(() => {
     const { current } = listRef;
@@ -52,56 +50,73 @@ export const PopularRoutesSpin = () => {
 
     return () => {
       current?.removeEventListener("scroll", checkForScrollPosition);
-      debounceCheckForScrollPosition.cancel();
     };
   }, []);
 
-  return <Box display={"flex"} flexDirection={"column"} width={"100%"}>
-  <div className={classes.container}>
-    <ul ref={listRef} className={classes.list}>
-      <li className={classes.element}>
-        <PopularRoute image={null}
-          title={"Ещё какое-то название"}
-          description={"Главный водный путь, проходящий через какой-то там мост мимо афигеть какой интересной  достопримечательности."}
-          control_points_num={10}
-          spent_time={"2ч"}
-          length={"15км"}/>
-      </li>
-      <li className={classes.element}>
-        <PopularRoute image={null}
-          title={"Ещё какое-то название"}
-          description={"Главный водный путь, проходящий через какой-то там мост мимо афигеть какой интересной  достопримечательности."}
-          control_points_num={10}
-          spent_time={"2ч"}
-          length={"15км"}/>
-      </li>
-      <li className={classes.element}>
-        <PopularRoute image={null}
-          title={"Ещё какое-то название"}
-          description={"Главный водный путь, проходящий через какой-то там мост мимо афигеть какой интересной  достопримечательности."}
-          control_points_num={10}
-          spent_time={"2ч"}
-          length={"15км"}/>
-      </li>
-      <li className={classes.element}>
-        <PopularRoute image={null}
-          title={"Ещё какое-то название"}
-          description={"Главный водный путь, проходящий через какой-то там мост мимо афигеть какой интересной  достопримечательности."}
-          control_points_num={10}
-          spent_time={"2ч"}
-          length={"15км"}/>
-      </li>
-
-    </ul>
-  </div>
-    {canScrollRight || canScrollLeft ?
-    <div style={{display: "flex", width: "100%", justifyContent: "end"}}>
-      <Button disabled={!canScrollLeft} onClick={()=>scrollContainerBy(-400)}>
-        <ArrowBackIcon/>
-      </Button>
-      <Button disabled={!canScrollRight} onClick={()=>scrollContainerBy(400)}>
-      <ArrowForwardIcon/>
-      </Button>
-    </div> : null}
-  </Box>
+  return (
+    <Box display={"flex"} flexDirection={"column"} width={"100%"}>
+      <div className={classes.container}>
+        <ul ref={listRef} className={classes.list}>
+          <li className={classes.element}>
+            <PopularRoute
+              image={null}
+              title={"Ещё какое-то название"}
+              description={
+                "Главный водный путь, проходящий через какой-то там мост мимо афигеть какой интересной  достопримечательности."
+              }
+              control_points_num={10}
+              spent_time={"2ч"}
+              length={"15км"}
+            />
+          </li>
+          <li className={classes.element}>
+            <PopularRoute
+              image={null}
+              title={"Ещё какое-то название"}
+              description={
+                "Главный водный путь, проходящий через какой-то там мост мимо афигеть какой интересной  достопримечательности."
+              }
+              control_points_num={10}
+              spent_time={"2ч"}
+              length={"15км"}
+            />
+          </li>
+          <li className={classes.element}>
+            <PopularRoute
+              image={null}
+              title={"Ещё какое-то название"}
+              description={
+                "Главный водный путь, проходящий через какой-то там мост мимо афигеть какой интересной  достопримечательности."
+              }
+              control_points_num={10}
+              spent_time={"2ч"}
+              length={"15км"}
+            />
+          </li>
+          <li className={classes.element}>
+            <PopularRoute
+              image={null}
+              title={"Ещё какое-то название"}
+              description={
+                "Главный водный путь, проходящий через какой-то там мост мимо афигеть какой интересной  достопримечательности."
+              }
+              control_points_num={10}
+              spent_time={"2ч"}
+              length={"15км"}
+            />
+          </li>
+        </ul>
+      </div>
+      {canScrollRight || canScrollLeft ? (
+        <div style={{ display: "flex", width: "100%", justifyContent: "end" }}>
+          <Button disabled={!canScrollLeft} onClick={() => scrollContainerBy(-400)}>
+            <ArrowBackIcon />
+          </Button>
+          <Button disabled={!canScrollRight} onClick={() => scrollContainerBy(400)}>
+            <ArrowForwardIcon />
+          </Button>
+        </div>
+      ) : null}
+    </Box>
+  );
 };
