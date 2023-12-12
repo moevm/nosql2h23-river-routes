@@ -13,6 +13,7 @@ import se.moevm.river_routes.osm.repository.SightRepository;
 import se.moevm.river_routes.osm.repository.WaterRepository;
 import se.moevm.river_routes.osm.services.OSMPumpService;
 
+import java.time.Instant;
 import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -34,27 +35,28 @@ public class OSMPumpServiceImpl implements OSMPumpService {
     @Override
     public boolean pumpAllData() {
         try {
-            List<WaterNode> waterNodes = getAllWater();
-            log.info("found {} water nodes", waterNodes.size());
-            linkWaterNodes(waterNodes);
-            log.info("water nodes linked");
-
-            List<PierNode> pierNodes = getAllPierces();
-            log.info("found {} pier nodes", pierNodes.size());
-            linkPierWithWater(pierNodes, waterNodes);
-            log.info("pier nodes linked");
-
+//            List<WaterNode> waterNodes = getAllWater();
+//            log.info("found {} water nodes", waterNodes.size());
+//            linkWaterNodes(waterNodes);
+//            log.info("water nodes linked");
+//
+//            List<PierNode> pierNodes = getAllPierces();
+//            log.info("found {} pier nodes", pierNodes.size());
+//            linkPierWithWater(pierNodes, waterNodes);
+//            log.info("pier nodes linked");
+//
             List<SightNode> sightNodes = getAllSights();
-            log.info("found {} sight nodes", sightNodes.size());
-            linkSightWithWater(sightNodes, waterNodes);
-            log.info("sight nodes linked");
-
-            log.info("saving...");
-            waterRepository.saveAll(waterNodes);
-            pierRepository.saveAll(pierNodes);
+//            log.info("found {} sight nodes", sightNodes.size());
+//            linkSightWithWater(sightNodes, waterNodes);
+//            log.info("sight nodes linked");
+//
+//            log.info("saving...");
+//            waterRepository.saveAll(waterNodes);
+//            pierRepository.saveAll(pierNodes);
             sightRepository.saveAll(sightNodes);
             log.info("saved");
 
+            System.out.println(sightNodes);
             return true;
         } catch (Throwable e) {
             waterRepository.deleteAll();
@@ -104,7 +106,7 @@ public class OSMPumpServiceImpl implements OSMPumpService {
                 .flatMap(x -> x.getGeometry().stream())
                 .distinct()
                 .map(x -> SightNode.builder()
-                        .title("name")
+                        .title("Шателена 3")
                         .lat(x.getLat())
                         .lon(x.getLon())
                         .wikiLink("http://en.wikipedia.org/wiki/")
