@@ -2,6 +2,7 @@ import React from "react";
 import { Box, Button, makeStyles } from "@material-ui/core";
 import { useSelector } from "react-redux";
 import { Sight } from "@src/store/route/routeTypes";
+import { getAllSights } from "@src/store/route/routeActions";
 
 const useStyles = makeStyles((theme) => ({
   root: {},
@@ -10,11 +11,13 @@ const useStyles = makeStyles((theme) => ({
 export const ExistingSights = () => {
   const allSights: Sight[] = useSelector((state: any) => state.route.allSights);
   return (
-    <Box style={{ width: "100%" }}>
+    <Box style={{ padding: "1rem" }}>
       <h2>Какие достопримечательности есть?</h2>
-      <Box>
+      <Box display={"flex"} justifyContent={"space-between"}>
         Для того, чтобы посмотреть, какие достопримечательности можно посмотреть, выгрузите данные.
-        <Button>Просмотр</Button>
+        <Button variant={"outlined"} onClick={getAllSights}>
+          Просмотр
+        </Button>
       </Box>
       <Box>
         {allSights.length
