@@ -100,6 +100,8 @@ public class OSMPumpServiceImpl implements OSMPumpService {
     }
 
     private List<SightNode> getAllSights() {
+        System.out.println(feignClient.getSightNodes());
+
         return feignClient.getSightNodes().getElements().stream()
                 .filter(x -> x.getMembers() != null)
                 .flatMap(x -> x.getMembers().stream())

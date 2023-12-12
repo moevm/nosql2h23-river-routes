@@ -11,6 +11,6 @@ import java.util.List;
 @Repository
 public interface SightRepository extends Neo4jRepository<SightNode, Long> {
 
-    @Query("MATCH (n:Pier) RETURN n limit 50")
+    @Query("MATCH (n:Sight) RETURN n limit 50")
     List<SightNode> getSights();
 }

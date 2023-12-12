@@ -7,6 +7,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 import se.moevm.river_routes.osm.repository.SightRepository;
 
+import java.util.stream.Collectors;
+
 @RestController
 @AllArgsConstructor
 @Slf4j
@@ -17,6 +19,6 @@ public class SightController {
     @GetMapping("/sights")
     public ResponseEntity<?> getSights() {
         log.info("get-sights");
-        return ResponseEntity.ok(sightRepository.getSights());
+        return ResponseEntity.ok(sightRepository.getSights().stream().filter(x -> x.getLat() != null).collect(Collectors.toList()));
     }
 }
