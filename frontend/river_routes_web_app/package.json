@@ -69,7 +69,7 @@
     "workbox-webpack-plugin": "^6.4.1"
   },
   "scripts": {
-    "start": "NODE_ENV=development webpack-dev-server --open",
+    "start": "SET NODE_ENV=development&& webpack-dev-server --open",
     "build": "webpack",
     "test": "node scripts/test.js"
   },

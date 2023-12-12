@@ -3,6 +3,8 @@ package se.moevm.river_routes.osm.entity;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 import org.springframework.data.neo4j.core.schema.GeneratedValue;
@@ -19,6 +21,7 @@ import java.util.List;
 @Setter
 @AllArgsConstructor
 @Builder
+@NoArgsConstructor
 @ToString
 @Node("Sight")
 public class SightNode {
@@ -28,13 +31,13 @@ public class SightNode {
     private Long id;
 
     @Property("title")
-    private final String title;
+    private String title;
 
     @Property("lat")
-    private final Double lat;
+    private Double lat;
 
     @Property("lon")
-    private final Double lon;
+    private Double lon;
 
     @Property("wiki_link")
     private String wikiLink;
@@ -43,7 +46,7 @@ public class SightNode {
     private OffsetDateTime updatedAt;
 
     @Relationship(type = "OBSERVABLE_FROM", direction = Relationship.Direction.INCOMING)
-    private final List<WaterNode> availableFrom = new ArrayList<>();
+    private List<WaterNode> availableFrom = new ArrayList<>();
 
     public void addObservationFromWater(WaterNode node) {
         availableFrom.add(node);

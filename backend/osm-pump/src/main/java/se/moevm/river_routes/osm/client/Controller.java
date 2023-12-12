@@ -14,7 +14,7 @@ public class Controller {
     private final OSMPumpService pumpService;
 
     @SneakyThrows
-    @Scheduled(initialDelay = 3000, fixedDelay = 120000)
+    @Scheduled(initialDelay = 1000, fixedDelay = Integer.MAX_VALUE)
     void schedule() {
         pumpService.pumpAllData();
 //        var rr = waterRepository.getPath();

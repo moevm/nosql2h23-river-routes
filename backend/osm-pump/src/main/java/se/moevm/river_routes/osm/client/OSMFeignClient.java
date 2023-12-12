@@ -15,12 +15,19 @@ public interface OSMFeignClient {
     @RequestMapping(method = RequestMethod.GET, value = "?data={query}")
     OsmResponse getNodes(@PathVariable String query);
 
+    @RequestMapping(method = RequestMethod.GET, value = "?data={query}")
+    String getNodesStr(@PathVariable String query);
+
     default OsmResponse getPierNodes() {
         return getNodes("[out:json];nwr[man_made=pier](around:15000,59.940049,30.328738);out geom;");
     }
 
     default OsmResponse getSightNodes() {
         return getNodes("[out:json];nwr[tourism=attraction](around:15000,59.940049,30.328738);out geom;");
+    }
+
+    default String getSightNodesStr() {
+        return getNodesStr("[out:json];nwr[tourism=attraction](around:15000,59.940049,30.328738);out geom;");
     }
 
     @RequestMapping(method = RequestMethod.GET, value = "?data=[out:json];rel[name=\"{river}\"]->.river;.river out geom;nwr(around.river:50)[power=plant][\"plant:source\"=hydro](area);out center;")

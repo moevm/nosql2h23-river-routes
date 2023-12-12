@@ -14,4 +14,8 @@ import java.util.List;
 public class GeoElement {
 
     private List<GeoNode> members;
+    private Double lat;
+    private Double lon;
+    private String type;
+    private Tag tags;
 }

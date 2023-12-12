@@ -12,12 +12,12 @@ public class HelloScheduler {
 
     @Scheduled(initialDelay = 3000, fixedDelay = 120000)
     void schedule() {
-        System.out.println("scheduled!!!");
-
-        SampleNode node1 = new SampleNode("hi");
-
-        sampleRepository.save(node1);
-
-        sampleRepository.findById("hi").ifPresent(y -> System.out.println(y));
+//        System.out.println("scheduled!!!");
+//
+//        SampleNode node1 = new SampleNode("hi");
+//
+//        sampleRepository.save(node1);
+//
+//        sampleRepository.findById("hi").ifPresent(y -> System.out.println(y));
     }
 }

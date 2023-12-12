@@ -13,10 +13,10 @@ import se.moevm.river_routes.osm.repository.SightRepository;
 import se.moevm.river_routes.osm.repository.WaterRepository;
 import se.moevm.river_routes.osm.services.OSMPumpService;
 
-import java.time.Instant;
 import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @Service
 @AllArgsConstructor
@@ -35,6 +35,7 @@ public class OSMPumpServiceImpl implements OSMPumpService {
     @Override
     public boolean pumpAllData() {
         try {
+            sightRepository.deleteAll();
 //            List<WaterNode> waterNodes = getAllWater();
 //            log.info("found {} water nodes", waterNodes.size());
 //            linkWaterNodes(waterNodes);
@@ -45,7 +46,7 @@ public class OSMPumpServiceImpl implements OSMPumpService {
 //            linkPierWithWater(pierNodes, waterNodes);
 //            log.info("pier nodes linked");
 //
-            List<SightNode> sightNodes = getAllSights();
+            List<SightNode> sightNodes = getAllSights().stream().limit(20).toList();
 //            log.info("found {} sight nodes", sightNodes.size());
 //            linkSightWithWater(sightNodes, waterNodes);
 //            log.info("sight nodes linked");
@@ -100,16 +101,17 @@ public class OSMPumpServiceImpl implements OSMPumpService {
     }
 
     private List<SightNode> getAllSights() {
+        System.out.println("@@@@@@");
+        System.out.println("@@@@@@1");
+
         return feignClient.getSightNodes().getElements().stream()
-                .filter(x -> x.getMembers() != null)
-                .flatMap(x -> x.getMembers().stream())
-                .flatMap(x -> x.getGeometry().stream())
+                .filter(x -> Objects.equals(x.getType(), "node"))
                 .distinct()
                 .map(x -> SightNode.builder()
-                        .title("Шателена 3")
+                        .title(x.getTags().getName())
                         .lat(x.getLat())
                         .lon(x.getLon())
-                        .wikiLink("http://en.wikipedia.org/wiki/")
+                        .wikiLink(x.getTags().getWebsite())
                         .updatedAt(OffsetDateTime.now())
                         .build()
                 )

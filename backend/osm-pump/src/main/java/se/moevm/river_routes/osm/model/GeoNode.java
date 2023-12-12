@@ -15,4 +15,5 @@ public class GeoNode {
     String type;
     String role;
     List<Location2D> geometry;
+    String name;
 }
