@@ -1,0 +1,20 @@
+[{
+  "id": 1,
+  "name": "Питер за 3 часа",
+  "startLat": 59.97843,
+  "startLon": 30.23486,
+  "endLat": 59.96828,
+  "endLon": 30.31238,
+  "createAt": "09.11.2023",
+  "waterNodes": []
+},
+  {
+    "id": 2,
+    "name": "Три моста",
+    "startLat": 59.96448,
+    "startLon": 30.25053,
+    "endLat": 59.96843,
+    "endLon": 30.28054,
+    "createAt": "23.11.2023",
+    "waterNodes": []
+  }]
