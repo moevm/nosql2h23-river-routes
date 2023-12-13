@@ -19,7 +19,9 @@ export const TopBar = () => {
       </div>
       <div className={classes.menuItemsContainer}>
         <span className={classes.menuItems}>Главная</span>
-        <span className={classes.menuItems}>Водные маршруты</span>
+        <Link className={classes.menuItems} to={"/archive"}>
+          Водные маршруты
+        </Link>
         <span className={classes.menuItems}>О Проекте</span>
         <span className={classes.menuItems}>FAQ</span>
       </div>

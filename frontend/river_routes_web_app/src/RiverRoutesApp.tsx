@@ -24,7 +24,7 @@ export const RiverRoutesApp = () => {
       <header style={{ position: pathname === "/" ? "absolute" : "relative", width: "100vw" }}>
         <TopBar />
       </header>
-      <Container maxWidth={false} style={{ padding: 0 }}>
+      <Container maxWidth={false} style={{ padding: 0, height: "100%" }}>
         <Routes>
           <Route path={"*"} element={<Error />} />
 
