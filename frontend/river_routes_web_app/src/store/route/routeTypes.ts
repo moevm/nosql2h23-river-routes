@@ -11,6 +11,23 @@ export interface Sight {
   updatedAt: any;
 }
 
+export interface WaterNode {
+  id: number;
+  lat: number;
+  lon: number;
+}
+
+export interface Route {
+  id: number;
+  name: string;
+  startLat: number;
+  startLon: number;
+  endLat: number;
+  endLon: number;
+  createAt: Date;
+  waterNodes: WaterNode[];
+}
+
 export interface DefaultState {
   allSights: Sight[];
 }
