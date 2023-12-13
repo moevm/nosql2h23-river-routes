@@ -27,5 +27,6 @@ services:
       - "127.0.0.1:8081:8081"
     command: 'java -jar osm-pump.jar'
 
+
 volumes:
   data:
