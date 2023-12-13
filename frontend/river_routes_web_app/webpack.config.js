@@ -1,6 +1,7 @@
 const webpack = require("webpack");
 const path = require("path");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
+const NodePolyfillPlugin = require("node-polyfill-webpack-plugin");
 module.exports = {
   mode: "development",
   entry: ["./src/index.tsx"],
@@ -37,13 +38,20 @@ module.exports = {
       },
     ],
   },
-  watch : true ,
+  watch: true,
   resolve: {
     extensions: [".*", ".js", ".jsx", ".ts", ".tsx"],
     alias: {
       "@src": path.resolve(__dirname, "src"),
     },
-    fallback: { timers: require.resolve("timers-browserify") },
+    fallback: {
+      timers: require.resolve("timers-browserify"),
+      fs: require.resolve("browserify-fs"),
+      // util: false,
+      // stream: false,
+      // buffer: false,
+      // path: false,
+    },
   },
   output: {
     path: path.resolve(__dirname, "dist"),
@@ -53,7 +61,9 @@ module.exports = {
   plugins: [
     new webpack.HotModuleReplacementPlugin(),
     new HtmlWebpackPlugin({ template: "./public/index.html", filename: "index.html", title: "Webpack App" }),
+    new NodePolyfillPlugin(),
   ],
+
   devServer: {
     static: path.resolve(__dirname, "dist"),
     hot: true,
