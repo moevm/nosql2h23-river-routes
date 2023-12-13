@@ -7,7 +7,7 @@ import HomePage from "./view/HomePage/HomePage";
 import { Route, Routes, useLocation } from "react-router-dom";
 import { CreateRoute } from "@src/view/CreateRoute/CreteRoute";
 import { Error } from "@src/view/Error/Error";
-import { Container } from "@material-ui/core";
+import { Box, Container } from "@material-ui/core";
 import { RoutesArchive } from "@src/view/RoutesArchive/RoutesArchive";
 export const RiverRoutesApp = () => {
   const { pathname } = useLocation();
@@ -18,13 +18,13 @@ export const RiverRoutesApp = () => {
         justifyContent: "space-between",
         flexDirection: "column",
         width: "100vw",
-        height: "100vh",
+        height: pathname !== "/" ? "100vh" : "auto",
       }}
     >
       <header style={{ position: pathname === "/" ? "absolute" : "relative", width: "100vw" }}>
         <TopBar />
       </header>
-      <Container maxWidth={false} style={{ padding: 0, height: "100%" }}>
+      <Box style={{ padding: 0, width: "100%", height: "100%", display: "flex", justifyContent: "flex-start" }}>
         <Routes>
           <Route path={"*"} element={<Error />} />
 
@@ -33,7 +33,7 @@ export const RiverRoutesApp = () => {
           <Route path={"/create_route"} element={<CreateRoute />} />
           <Route path={"/archive"} element={<RoutesArchive />} />
         </Routes>
-      </Container>
+      </Box>
       <footer>
         <Footer />
       </footer>
