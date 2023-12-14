@@ -116,7 +116,7 @@ public class OSMPumpServiceImpl implements OSMPumpService {
                         .title(x.getTags().getName())
                         .lat(x.getLat())
                         .lon(x.getLon())
-                        .wikiLink(x.getTags().getWebsite())
+                        .website(x.getTags().getWebsite())
                         .updatedAt(OffsetDateTime.now())
                         .build()
                 )
