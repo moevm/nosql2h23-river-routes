@@ -39,8 +39,17 @@ public class SightNode {
     @Property("lon")
     private Double lon;
 
-    @Property("wiki_link")
-    private String wikiLink;
+    @Property("website")
+    private String website;
+
+    @Property("architect")
+    private String architect;
+
+    @Property("year_of_construction")
+    private String yearOfConstruction;
+
+    @Property("start_date")
+    private String startDate;
 
     @Property("updated_at")
     private OffsetDateTime updatedAt;
