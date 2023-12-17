@@ -32,43 +32,50 @@ public class OSMPumpServiceImpl implements OSMPumpService {
     private static final double PIER_DISTANCE_THRESHOLD = 0.001;
     private static final double SIGHT_OBSERVATION_THRESHOLD = 0.002;
 
+    private static final double MIN_LATITUDE = 59.94;
+    private static final double MAX_LATITUDE = 59.95;
+    private static final double MIN_LONGITUDE = 30.32;
+    private static final double MAX_LONGITUDE = 30.34;
+
     @Override
     public boolean pumpAllData() {
         try {
-  //          sightRepository.deleteAll();
-//            List<WaterNode> waterNodes = getAllWater();
-//            log.info("found {} water nodes", waterNodes.size());
-//            linkWaterNodes(waterNodes);
-//            log.info("water nodes linked");
-//
-//            List<PierNode> pierNodes = getAllPierces();
-//            log.info("found {} pier nodes", pierNodes.size());
-//            linkPierWithWater(pierNodes, waterNodes);
-//            log.info("pier nodes linked");
-//
-            //   List<SightNode> sightNodes = getAllSights().stream().limit(20).toList();
-//            log.info("found {} sight nodes", sightNodes.size());
-//            linkSightWithWater(sightNodes, waterNodes);
-//            log.info("sight nodes linked");
-//
-//            log.info("saving...");
-//            waterRepository.saveAll(waterNodes);
-//            pierRepository.saveAll(pierNodes);
-            //    sightRepository.saveAll(sightNodes);
-            log.info("saved");
+            sightRepository.deleteAll();
+            waterRepository.deleteAll();
+            pierRepository.deleteAll();
 
-            System.out.println(feignClient.getPierNodes());
-            System.out.println("!!!!!");
-            System.out.println(feignClient.getSightNodes());
-            System.out.println("????");
-            System.out.println(feignClient.getRiverNodesRU("Нева"));
+            List<WaterNode> waterNodes = getAllWater();
+            log.info("found {} water nodes", waterNodes.size());
+            linkWaterNodes(waterNodes);
+            log.info("water nodes linked");
+
+            List<PierNode> pierNodes = getAllPierces().stream().limit(100).toList();
+            log.info("found {} pier nodes", pierNodes.size());
+            linkPierWithWater(pierNodes, waterNodes);
+            log.info("pier nodes linked");
+
+            List<SightNode> sightNodes = getAllSights().stream().toList();
+            log.info("found {} sight nodes", sightNodes.size());
+            linkSightWithWater(sightNodes, waterNodes);
+            log.info("sight nodes linked");
+
+            log.info("saving...");
+            waterRepository.saveAll(waterNodes);
+            pierRepository.saveAll(pierNodes);
+            sightRepository.saveAll(sightNodes);
+            log.info("saved");
             return true;
         } catch (Throwable e) {
-//            waterRepository.deleteAll();
-//            sightRepository.deleteAll();
-//            pierRepository.deleteAll();
+            System.out.println(e.getMessage());
+            waterRepository.deleteAll();
+            sightRepository.deleteAll();
+            pierRepository.deleteAll();
             return false;
         }
+    }
+
+    private boolean isWithinRectangularArea(double lat, double lon) {
+        return lat >= MIN_LATITUDE && lat <= MAX_LATITUDE && lon >= MIN_LONGITUDE && lon <= MAX_LONGITUDE;
     }
 
     private double distance(double x1, double y1, double x2, double y2) {
@@ -81,6 +88,7 @@ public class OSMPumpServiceImpl implements OSMPumpService {
                 .filter(x -> x.getMembers() != null)
                 .flatMap(x -> x.getMembers().stream())
                 .flatMap(x -> x.getGeometry().stream())
+                .filter(x -> isWithinRectangularArea(x.getLat(), x.getLon()))
                 .distinct()
                 .map(x -> WaterNode.builder()
                         .lat(x.getLat())
@@ -96,6 +104,7 @@ public class OSMPumpServiceImpl implements OSMPumpService {
                 .flatMap(x -> x.getMembers().stream())
                 .filter(x -> x.getGeometry() != null)
                 .flatMap(x -> x.getGeometry().stream())
+                .filter(x -> isWithinRectangularArea(x.getLat(), x.getLon()))
                 .distinct()
                 .map(x -> PierNode.builder()
                         .lat(x.getLat())
@@ -106,11 +115,9 @@ public class OSMPumpServiceImpl implements OSMPumpService {
     }
 
     private List<SightNode> getAllSights() {
-        System.out.println("@@@@@@");
-        System.out.println("@@@@@@1");
-
         return feignClient.getSightNodes().getElements().stream()
                 .filter(x -> Objects.equals(x.getType(), "node"))
+                .filter(x -> isWithinRectangularArea(x.getLat(), x.getLon()))
                 .distinct()
                 .map(x -> SightNode.builder()
                         .title(x.getTags().getName())
@@ -164,7 +171,6 @@ public class OSMPumpServiceImpl implements OSMPumpService {
     }
 
     private void linkSightWithWater(List<SightNode> sightNodes, List<WaterNode> waterNodes) {
-
         for (int i = 0; i < waterNodes.size(); i++) {
             var water = waterNodes.get(i);
             for (int j = 0; j < sightNodes.size(); j++) {
@@ -177,6 +183,9 @@ public class OSMPumpServiceImpl implements OSMPumpService {
                         water.setSights(new ArrayList<>());
                     }
                     water.addSight(sight);
+                    if (sight.getAvailableFrom() == null) {
+                        sight.setAvailableFrom(new ArrayList<>());
+                    }
                     sight.addObservationFromWater(water);
                 }
             }
