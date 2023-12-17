@@ -1,48 +1,82 @@
 import React, { useState } from "react";
 import { Page } from "@src/components/Page/Page";
-import {
-  Box,
-  Button,
-  Container,
-  makeStyles,
-  Paper,
-  List,
-  ListItem,
-  ListItemIcon,
-  Checkbox,
-  ListItemText,
-} from "@material-ui/core";
-import ListContext from "@material-ui/core/List/ListContext";
+import { Box, Button, Container, makeStyles } from "@material-ui/core";
+import { Camera, CameraFlyTo, Entity, Polyline, PolylineCollection, Viewer } from "resium";
+import pierses from "@src/data/pierses.json";
+import sigths from "@src/data/sights.json";
+import { Pierse, Sight } from "@src/store/route/routeTypes";
+import { Cartesian3, Color, InterpolationAlgorithm } from "cesium";
+import * as Cesium from "cesium";
 
 const useStyles = makeStyles((theme) => ({
   mainContainer: {
     display: "flex",
     height: "100%",
     flexDirection: "column",
+    padding: "3em",
   },
 }));
+
+const MapPoint: React.FC<{
+  data: Pierse | Sight;
+  onClickHandler: () => any;
+  isSelected: boolean;
+  isSight: boolean;
+}> = ({ data, onClickHandler, isSelected = false, isSight = false }) => {
+  return (
+    <Entity
+      name={isSight ? `Достопримечательность ${data.id}` : `Пирс ${data.id}`}
+      position={Cartesian3.fromDegrees(data.lon, data.lat, 10)}
+      point={{
+        pixelSize: isSelected ? 20 : 10,
+        color: isSelected ? Color.AQUA : !isSight ? Color.BLUEVIOLET : Color.GREENYELLOW,
+      }}
+      onClick={onClickHandler}
+    />
+  );
+};
 export const CreateRoute = () => {
   const classes = useStyles();
 
-  const sights = [];
-  const [selectedSights, setSelectedSights] = useState([]);
-  const [startPoint, setStartPoint] = useState(null);
-  const [endPoint, setEndPoint] = useState(null);
+  const [selectedSights, setSelectedSights] = useState<Sight[]>([]);
+  const [startPoint, setStartPoint] = useState<Pierse>(null);
+  const [endPoint, setEndPoint] = useState<Pierse>(null);
 
-  const allSights: any = [];
-  const allPierses: any = [];
+  const allSights: Sight[] = JSON.parse(JSON.stringify(sigths));
+  const allPierses: Pierse[] = JSON.parse(JSON.stringify(pierses));
 
-  const handleToggle = (value: number) => () => {
-    const currentIndex = selectedSights.indexOf(value);
-    const newChecked = [...selectedSights];
+  console.log(allSights, allPierses);
 
-    if (currentIndex === -1) {
-      newChecked.push(value);
-    } else {
-      newChecked.splice(currentIndex, 1);
+  const onSightClickHandle = (id: number) => {
+    const ifAlreadyExisted = selectedSights.find((sight) => sight.id === id);
+    if (ifAlreadyExisted) {
+      setSelectedSights((prevState) => prevState.filter((sight) => sight.id !== ifAlreadyExisted.id));
+    } else setSelectedSights((prevState) => [...prevState, allSights.find((elem) => elem.id === id)]);
+  };
+  const onPierseCkickHandle = (clickElement: Pierse) => {
+    if (!startPoint && !endPoint) {
+      setStartPoint(clickElement);
+    } else if (!endPoint && startPoint) {
+      if (JSON.stringify(clickElement.id) === JSON.stringify(startPoint.id)) {
+        setStartPoint(null);
+      } else {
+        setEndPoint(clickElement);
+      }
+    } else if (endPoint && !startPoint) {
+      if (JSON.stringify(clickElement.id) === JSON.stringify(endPoint.id)) {
+        setEndPoint(null);
+      } else {
+        setStartPoint(clickElement);
+      }
+    } else if (endPoint && startPoint) {
+      if (JSON.stringify(clickElement.id) === JSON.stringify(endPoint.id)) {
+        setEndPoint(null);
+        // setList((prevState) => prevState.map((point)=>JSON.stringify(point.coordinates)===JSON.stringify(clickElement.coordinates) ? {...point, selected: false} : point))
+      } else if (JSON.stringify(clickElement.id) === JSON.stringify(startPoint.id)) {
+        setStartPoint(null);
+        // setList((prevState) => prevState.map((point)=>JSON.stringify(point.coordinates)===JSON.stringify(clickElement.coordinates) ? {...point, selected: false} : point))
+      }
     }
-
-    setSelectedSights(newChecked);
   };
 
   return (
@@ -60,58 +94,88 @@ export const CreateRoute = () => {
         </Box>
         <Box>
           <h3>1. Выберите, какие достопримечательности вы бы хотели увидеть с воды </h3>
-          <Box display={"flex"} flexDirection={"row"} width={"100%"}>
-            <List
-              style={{
-                height: "500px",
-                width: "min(40%, 300px)",
-                display: "flex",
-                justifyContent: "center",
-                border: "1px solid black",
-                padding: "0 10px 0 10px",
-              }}
-            >
-              {allSights.length ? (
-                allSights.map((elem: any, key: number) => (
-                  <ListItem key={key}>
-                    <ListItemIcon>
-                      <Checkbox
-                        edge="start"
-                        checked={selectedSights.indexOf(elem) !== -1}
-                        tabIndex={-1}
-                        disableRipple
-                      />
-                    </ListItemIcon>
-                    <ListItemText primary={elem.name} />
-                  </ListItem>
-                ))
-              ) : (
-                <p>Отсуствуют данные(</p>
+          <Viewer
+            style={{ width: "100%", height: "800px" }}
+            geocoder={false}
+            timeline={false}
+            navigationHelpButton={false}
+            homeButton={false}
+            baseLayerPicker={false}
+          >
+            <Camera />
+            <CameraFlyTo
+              duration={2}
+              destination={Cartesian3.fromDegrees(
+                allPierses[Math.floor(allPierses.length / 2)].lon,
+                allPierses[Math.floor(allPierses.length / 2)].lat,
+                3000,
               )}
-            </List>
-            <ul>
-              {selectedSights.length ? (
-                selectedSights.map((elem, key) => (
-                  <li key={key}>
-                    <p>{elem.address}</p>
-                  </li>
-                ))
-              ) : (
-                <p>Вы не выбрали ни одной достопримечательности</p>
-              )}
-            </ul>
-            {/*<ul>*/}
-            {/*  {selectedSights.length ? (*/}
-            {/*  ) : (<p>Вы не выбрали ни одной достопримечательности</p>)}*/}
-            {/*</ul>*/}
-          </Box>
+              once={true}
+            />
+            {allSights.map((elem: Sight) => (
+              <MapPoint
+                data={elem}
+                onClickHandler={() => onSightClickHandle(elem.id)}
+                isSelected={false}
+                isSight={true}
+              />
+            ))}
+          </Viewer>
+          <ul>
+            {selectedSights.length ? (
+              selectedSights.map((elem, key) => (
+                <li key={key}>
+                  <p>
+                    {elem.title} {elem.lat} {elem.lon}
+                  </p>
+                </li>
+              ))
+            ) : (
+              <p>Вы не выбрали ни одной достопримечательности</p>
+            )}
+          </ul>
+          {/*<ul>*/}
+          {/*  {selectedSights.length ? (*/}
+          {/*  ) : (<p>Вы не выбрали ни одной достопримечательности</p>)}*/}
+          {/*</ul>*/}
         </Box>
         <Box>
           <h3>2. Выберите начальную и конечную точки маршрута на карте</h3>
-          <p>Начальная точка: </p>
-          <p>Конечная точка: </p>
+          <p>
+            Начальная точка: {startPoint?.lat}, {startPoint?.lon}
+          </p>
+          <p>
+            Конечная точка: {endPoint?.lat}, {endPoint?.lon}
+          </p>
         </Box>
-        <Box>
+        <Viewer
+          style={{ width: "100%", height: "500px" }}
+          geocoder={false}
+          timeline={false}
+          navigationHelpButton={false}
+          homeButton={false}
+          baseLayerPicker={false}
+        >
+          <Camera />
+          <CameraFlyTo
+            duration={2}
+            destination={Cartesian3.fromDegrees(
+              allPierses[Math.floor(allPierses.length / 2)].lon,
+              allPierses[Math.floor(allPierses.length / 2)].lat,
+              3000,
+            )}
+            once={true}
+          />
+          {allPierses.map((elem: Pierse) => (
+            <MapPoint
+              data={elem}
+              onClickHandler={() => onPierseCkickHandle(elem)}
+              isSight={false}
+              isSelected={elem.id === startPoint?.id || elem.id === endPoint?.id}
+            />
+          ))}
+        </Viewer>
+        <Box paddingTop={"1em"}>
           <Button variant={"outlined"}>Построить маршрут</Button>
         </Box>
       </Container>

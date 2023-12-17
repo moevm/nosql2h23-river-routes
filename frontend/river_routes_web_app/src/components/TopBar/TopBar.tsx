@@ -18,11 +18,12 @@ export const TopBar = () => {
         </Link>
       </div>
       <div className={classes.menuItemsContainer}>
-        <span className={classes.menuItems}>Главная</span>
+        <Link className={classes.menuItems} to={"/"}>
+          Главная
+        </Link>
         <Link className={classes.menuItems} to={"/archive"}>
           Водные маршруты
         </Link>
-        <span className={classes.menuItems}>О Проекте</span>
         <span className={classes.menuItems}>FAQ</span>
       </div>
     </Box>

@@ -1,4 +1,4 @@
-import {makeStyles} from "@material-ui/core";
+import { makeStyles } from "@material-ui/core";
 
 export const useStyles = makeStyles((theme) => ({
   root: {
@@ -19,7 +19,7 @@ export const useStyles = makeStyles((theme) => ({
     fontSize: "70px",
     marginTop: 0,
     paddingTop: "3em",
-    width: "50%"
+    width: "50%",
   },
   subtitleDiv: {
     display: "flex",
@@ -33,9 +33,10 @@ export const useStyles = makeStyles((theme) => ({
     flexShrink: 0,
     display: "flex",
     justifyContent: "center",
+    color: "black",
     alignItems: "center",
     "&:hover": {
       cursor: "pointer",
-    }
-  }
+    },
+  },
 }));

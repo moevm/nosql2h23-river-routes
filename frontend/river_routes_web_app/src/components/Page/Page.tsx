@@ -17,7 +17,7 @@ export const Page: React.FC<{ title: string; description: string; children: any 
     },
   };
   return (
-    <div style={{ width: "100%", height: "100%" }}>
+    <div style={{ width: "100%" }}>
       <DocumentMeta {...meta} />
       {children}
     </div>
