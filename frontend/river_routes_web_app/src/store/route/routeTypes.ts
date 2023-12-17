@@ -28,6 +28,13 @@ export interface Route {
   waterNodes: WaterNode[];
 }
 
+export interface Pierse {
+  id: number;
+  lat: number;
+  lon: number;
+  waterNodes: WaterNode[];
+}
+
 export interface DefaultState {
   allSights: Sight[];
 }

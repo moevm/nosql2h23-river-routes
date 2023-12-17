@@ -9,6 +9,7 @@ import { CreateRoute } from "@src/view/CreateRoute/CreteRoute";
 import { Error } from "@src/view/Error/Error";
 import { Box, Container } from "@material-ui/core";
 import { RoutesArchive } from "@src/view/RoutesArchive/RoutesArchive";
+import RouteOverview from "@src/view/RouteOverview/RouteOverview";
 export const RiverRoutesApp = () => {
   const { pathname } = useLocation();
   return (
@@ -24,14 +25,22 @@ export const RiverRoutesApp = () => {
       <header style={{ position: pathname === "/" ? "absolute" : "relative", width: "100vw" }}>
         <TopBar />
       </header>
-      <Box style={{ padding: 0, width: "100%", height: "100%", display: "flex", justifyContent: "flex-start" }}>
+
+      <Box
+        style={{
+          padding: 0,
+          width: "100%",
+          height: pathname === "/archive" ? "100%" : "auto",
+          display: "flex",
+          justifyContent: "flex-start",
+        }}
+      >
         <Routes>
           <Route path={"*"} element={<Error />} />
-
           <Route path={"/"} element={<HomePage />} />
-
           <Route path={"/create_route"} element={<CreateRoute />} />
           <Route path={"/archive"} element={<RoutesArchive />} />
+          <Route path={"/routes/:id"} element={<RouteOverview />} />
         </Routes>
       </Box>
       <footer>

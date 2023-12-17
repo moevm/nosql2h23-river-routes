@@ -35,13 +35,13 @@ export const HomePage = () => {
 
           <div className={classes.subtitleDiv}>
             <Link className={classes.subtitle} to={"archive"}>
-              Архив маршрутов
+              Рекомендации
             </Link>
           </div>
         </Box>
         <Description />
-        <ExistingSights />
-        <PopularRoutes />
+        {/*<ExistingSights />*/}
+        {/*<PopularRoutes />*/}
         <FAQ />
       </Paper>
     </Page>
