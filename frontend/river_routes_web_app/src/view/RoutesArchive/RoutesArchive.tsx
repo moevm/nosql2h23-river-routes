@@ -26,6 +26,10 @@ const useStyles = makeStyles((theme) => ({
   tableCell: {
     fontSize: 30,
   },
+  formControl: {
+    margin: theme.spacing(1),
+    minWidth: 120,
+  },
 }));
 
 interface FormState {
@@ -43,8 +47,10 @@ export const RoutesArchive = () => {
   const classes = useStyles();
   const [form, setForm] = useState(defaultState());
   const debouncedFilterValue = useDebounce(form, 200);
-  const [pierses, setPierses] = useState<any[]>([]);
   const [filteredRoutes, setFiltetedRoutes] = useState<Route[]>(allRoutes);
+  const [startPoint, setStartPoint] = useState(null);
+  const [endPoint, setEndPoint] = useState(null);
+
   const onFilterChangeHandler = (e: any) => {
     const { name, value } = e.target;
     const newValue = name === "date" ? value.split("-").reverse().toString().replace(/,/g, ".") : value;
@@ -53,16 +59,23 @@ export const RoutesArchive = () => {
   };
 
   useEffect(() => {
+    let endCoordinates = endPoint ? allRoutes.find((route) => route.id === endPoint) : null;
+    let startCoordinates = startPoint ? allRoutes.find((route) => route.id === startPoint) : null;
+
     if (allRoutes.length) {
       setFiltetedRoutes(
         allRoutes.filter(
           (elem) =>
             elem.name.includes(debouncedFilterValue.routeName) &&
-            (debouncedFilterValue.date !== "" ? elem.createAt.toString() == debouncedFilterValue.date : true),
+            (debouncedFilterValue.date !== "" ? elem.createAt.toString() == debouncedFilterValue.date : true) &&
+            (startCoordinates
+              ? elem.startLat === startCoordinates.startLat && elem.startLon === startCoordinates.startLon
+              : true) &&
+            (endCoordinates ? elem.endLat === endCoordinates.endLat && elem.endLon === endCoordinates.endLon : true),
         ),
       );
     }
-  }, [debouncedFilterValue]);
+  }, [debouncedFilterValue, startPoint, endPoint]);
 
   const onImportHandler = async () => {
     const newData: Route[] = JSON.parse(await uploadFile());
@@ -95,24 +108,44 @@ export const RoutesArchive = () => {
         </section>
         <section>
           <Grid container spacing={2}>
-            {pierses.length ? (
+            {allRoutes.length ? (
               <>
                 <Grid item md={12} lg={5}>
-                  <FormControl fullWidth variant={"outlined"}>
-                    <InputLabel>Выберите начало маршрута</InputLabel>
-                    <Select>
-                      {pierses.map((pierse) => (
-                        <MenuItem value={pierse.id}>{pierse.address}</MenuItem>
+                  <FormControl fullWidth variant={"outlined"} className={classes.formControl}>
+                    <InputLabel id="demo-simple-select-outlined-label1">Выберите начало маршрута</InputLabel>
+                    <Select
+                      labelId={"demo-simple-select-outlined-label1"}
+                      label={"Выберите начало маршрута"}
+                      value={startPoint ? startPoint : ""}
+                      onChange={(e: any) => {
+                        setStartPoint(e.target.value);
+                      }}
+                    >
+                      <MenuItem value={null}>Все</MenuItem>
+                      {allRoutes.map((pierse, num) => (
+                        <MenuItem value={pierse.id} key={num}>
+                          {pierse.startLat},{pierse.startLon}
+                        </MenuItem>
                       ))}
                     </Select>
                   </FormControl>
                 </Grid>
                 <Grid item md={12} lg={5}>
-                  <FormControl fullWidth variant={"outlined"}>
-                    <InputLabel>Выберите конец маршрута</InputLabel>
-                    <Select>
-                      {pierses.map((pierse) => (
-                        <MenuItem value={pierse.id}>{pierse.address}</MenuItem>
+                  <FormControl fullWidth variant={"outlined"} className={classes.formControl}>
+                    <InputLabel id="demo-simple-select-outlined-label2">Выберите конец маршрута</InputLabel>
+                    <Select
+                      labelId={"demo-simple-select-outlined-label2"}
+                      label={"Выберите конец маршрута"}
+                      value={endPoint ? endPoint : ""}
+                      onChange={(e: any) => {
+                        setEndPoint(e.target.value);
+                      }}
+                    >
+                      <MenuItem value={null}>Все</MenuItem>
+                      {allRoutes.map((pierse, num) => (
+                        <MenuItem value={pierse.id} key={num}>
+                          {pierse.endLat},{pierse.endLon}
+                        </MenuItem>
                       ))}
                     </Select>
                   </FormControl>
@@ -151,7 +184,7 @@ export const RoutesArchive = () => {
             <TableBody>
               {filteredRoutes.length ? (
                 filteredRoutes.map((route, number) => (
-                  <TableRow key={number} onClick={() => (window.location.href = `/routes/:${route.id}`)}>
+                  <TableRow key={number} onClick={() => (window.location.href = `/routes/${route.id}`)}>
                     <TableCell className={classes.tableCell}>{route.name}</TableCell>
                     <TableCell className={classes.tableCell}>
                       {route.startLat} {route.startLon}
