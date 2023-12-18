@@ -7,6 +7,7 @@ import sigths from "@src/data/sights.json";
 import { Pierse, Sight } from "@src/store/route/routeTypes";
 import { Cartesian3, Color, InterpolationAlgorithm } from "cesium";
 import * as Cesium from "cesium";
+import { MapPoint } from "@src/components/MapPoint/MapPoint";
 
 const useStyles = makeStyles((theme) => ({
   mainContainer: {
@@ -17,24 +18,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const MapPoint: React.FC<{
-  data: Pierse | Sight;
-  onClickHandler: () => any;
-  isSelected: boolean;
-  isSight: boolean;
-}> = ({ data, onClickHandler, isSelected = false, isSight = false }) => {
-  return (
-    <Entity
-      name={isSight ? `Достопримечательность ${data.id}` : `Пирс ${data.id}`}
-      position={Cartesian3.fromDegrees(data.lon, data.lat, 10)}
-      point={{
-        pixelSize: isSelected ? 20 : 10,
-        color: isSelected ? Color.AQUA : !isSight ? Color.BLUEVIOLET : Color.GREENYELLOW,
-      }}
-      onClick={onClickHandler}
-    />
-  );
-};
+//
 export const CreateRoute = () => {
   const classes = useStyles();
 
@@ -44,8 +28,6 @@ export const CreateRoute = () => {
 
   const allSights: Sight[] = JSON.parse(JSON.stringify(sigths));
   const allPierses: Pierse[] = JSON.parse(JSON.stringify(pierses));
-
-  console.log(allSights, allPierses);
 
   const onSightClickHandle = (id: number) => {
     const ifAlreadyExisted = selectedSights.find((sight) => sight.id === id);
@@ -149,7 +131,7 @@ export const CreateRoute = () => {
           </p>
         </Box>
         <Viewer
-          style={{ width: "100%", height: "500px" }}
+          style={{ width: "100%", height: "800px" }}
           geocoder={false}
           timeline={false}
           navigationHelpButton={false}

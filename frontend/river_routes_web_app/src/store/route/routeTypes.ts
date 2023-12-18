@@ -25,6 +25,7 @@ export interface Route {
   endLat: number;
   endLon: number;
   createAt: Date;
+  sights: Sight[];
   waterNodes: WaterNode[];
 }
 

@@ -1,11 +1,28 @@
 [{
   "id": 1,
   "name": "Питер за 3 часа",
-  "startLat": 59.97843,
-  "startLon": 30.23486,
-  "endLat": 59.96828,
-  "endLon": 30.31238,
+  "startLon": 30.338526,
+  "startLat": 59.941826,
+  "endLon": 30.343692,
+  "endLat": 59.934061,
   "createAt": "09.11.2023",
+  "sights": [
+    {
+      "id": 5,
+      "lon": 30.345033,
+      "lat": 59.936426,
+      "title": "Museum sucking",
+      "wikiLink": "",
+      "updatedAt": ""
+    },
+    {
+      "id": 5,
+      "lon": 30.345033,
+      "lat": 59.936426,
+      "title": "Museum fucking",
+      "wikiLink": "",
+      "updatedAt": ""
+    }],
   "waterNodes": []
 },
   {
@@ -16,5 +33,22 @@
     "endLat": 59.96843,
     "endLon": 30.28054,
     "createAt": "23.11.2023",
+    "sights":[
+      {
+        "id": 5,
+        "lon": 30.345033,
+        "lat": 59.936426,
+        "title": "Museum dicking",
+        "wikiLink": "",
+        "updatedAt": ""
+      },
+      {
+        "id": 5,
+        "lon": 30.345033,
+        "lat": 59.936426,
+        "title": "Museum ebling",
+        "wikiLink": "",
+        "updatedAt": ""
+      }],
     "waterNodes": []
   }]
