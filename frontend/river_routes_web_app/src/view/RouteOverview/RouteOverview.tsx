@@ -1,20 +1,27 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Page } from "@src/components/Page/Page";
 import { Box } from "@material-ui/core";
 import { useParams } from "react-router-dom";
 
 import routes from "@src/data/routes.json";
-import { Route } from "@src/store/route/routeTypes";
+import { Route, WaterNode } from "@src/store/route/routeTypes";
 import LocationOnOutlinedIcon from "@material-ui/icons/LocationOnOutlined";
-import { Camera, CameraFlyTo, Viewer } from "resium";
+import { Camera, CameraFlyTo, Polyline, PolylineCollection, Viewer } from "resium";
 import { Cartesian3 } from "cesium";
 import { MapPoint } from "@src/components/MapPoint/MapPoint";
+import { useSelector } from "react-redux";
 
 export const RouteOverview = () => {
   const id = useParams();
 
-  const allRoutes: Route[] = JSON.parse(JSON.stringify(routes));
+  const _allRoutes: Route[] = useSelector((state: any) => state.route.allRoutes);
+  const [allRoutes, setAllRoutes] = useState<Route[]>(JSON.parse(JSON.stringify(routes)));
   const currentRoute = allRoutes.find((elem) => elem.id === parseInt(id.id));
+  useEffect(() => {
+    if (_allRoutes.length) {
+      setAllRoutes((prevState) => prevState.concat(_allRoutes));
+    }
+  }, [_allRoutes]);
 
   return (
     <Page title={"О маршруте"} description={"Ознакомьтесь с информацие о маршруте"}>
@@ -72,6 +79,29 @@ export const RouteOverview = () => {
               )}
               once={true}
             />
+            <PolylineCollection>
+              {currentRoute.waterNodes.map(
+                (elem: WaterNode, num) =>
+                  num !== currentRoute.waterNodes.length - 1 && (
+                    <Polyline
+                      positions={[
+                        Cartesian3.fromDegrees(elem.lon, elem.lat, 5),
+                        Cartesian3.fromDegrees(
+                          currentRoute.waterNodes[num + 1].lon,
+                          currentRoute.waterNodes[num + 1].lat,
+                          2,
+                        ),
+                        Cartesian3.fromDegrees(
+                          currentRoute.waterNodes[num + 1].lon,
+                          currentRoute.waterNodes[num + 1].lat,
+                          2,
+                        ),
+                      ]}
+                      width={5}
+                    />
+                  ),
+              )}
+            </PolylineCollection>
             {currentRoute.sights.map((elem) => (
               <MapPoint data={elem} onClickHandler={null} isSelected={false} isSight={true} />
             ))}

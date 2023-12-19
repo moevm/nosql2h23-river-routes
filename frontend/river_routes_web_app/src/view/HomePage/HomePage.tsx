@@ -11,6 +11,7 @@ import { ExistingSights } from "@src/view/HomePage/components/ExistingSights/Exi
 
 export const HomePage = () => {
   const classes = useStyles();
+
   return (
     <Page description={"Добро пожаловать в лучший сервис по построению маршрутов!"} title={"Главная"}>
       <Paper className={classes.root}>

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 
 import { TopBar } from "./components/TopBar/TopBar";
 import { Footer } from "./components/Footer/Footer";
@@ -10,8 +10,18 @@ import { Error } from "@src/view/Error/Error";
 import { Box, Container } from "@material-ui/core";
 import { RoutesArchive } from "@src/view/RoutesArchive/RoutesArchive";
 import RouteOverview from "@src/view/RouteOverview/RouteOverview";
+import { useDispatch } from "react-redux";
+import { getAllPierses, getAllSights } from "@src/store/route/routeActions";
 export const RiverRoutesApp = () => {
   const { pathname } = useLocation();
+
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    dispatch<any>(getAllSights());
+    dispatch<any>(getAllPierses());
+  }, []);
+
   return (
     <div
       style={{
