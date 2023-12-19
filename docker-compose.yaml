@@ -1,0 +1,31 @@
+version: '3.5'
+
+services:
+  db:
+    image: neo4j:4.3.6
+    container_name: neo4j-osm_pump
+    restart: always
+    volumes:
+      - data:/data
+    environment:
+      - NEO4J_AUTH=neo4j/password
+
+  frontend:
+    build: ./frontend/river_routes_web_app
+    restart: always
+    ports:
+      - "127.0.0.1:8080:8080"
+
+  backend:
+    build:
+      context: .
+      dockerfile: osm-pump.dockerfile
+    restart: always
+    depends_on:
+      - db
+    ports:
+      - "127.0.0.1:8081:8081"
+    command: 'java -jar osm-pump.jar'
+
+volumes:
+  data:
