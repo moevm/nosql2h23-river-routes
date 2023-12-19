@@ -10,12 +10,12 @@ import {
 } from "@src/store/route/routeTypes";
 
 export const getAllSights = () => {
-  return async (dispatch: any) => {
+  return (dispatch: any) => {
     const result: GetAllSights = {
       type: GET_ALL_SIGHTS,
       payload: [],
     };
-    const response = await fetch("http://localhost:8081/sights")
+    fetch("http://localhost:8081/sights")
       .then((res) => res.json())
       .then((_result) => {
         result.payload = _result;
@@ -27,12 +27,12 @@ export const getAllSights = () => {
 };
 
 export const getAllPierses = () => {
-  return async (dispatch: any) => {
+  return (dispatch: any) => {
     const result: GetAllPierses = {
       type: GET_ALL_PIERSES,
       payload: [],
     };
-    const response = await fetch("//TODO")
+    fetch("//TODO")
       .then((res) => res.json())
       .then((_result) => {
         result.payload = _result;
