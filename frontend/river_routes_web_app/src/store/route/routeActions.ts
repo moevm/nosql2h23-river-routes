@@ -46,22 +46,22 @@ export const getAllPierses = () => {
   };
 };
 
-export const getAllRoutes = () => {
-  return async (dispatch: any) => {
-    const result: GetAllRoutes = {
-      type: GET_ALL_ROUTES,
-      payload: [],
-    };
-    const response = await fetch("//TODO")
-      .then((res) => res.json())
-      .then((_result) => {
-        result.payload = _result;
-      })
-      .catch((e) => console.log(e));
-
-    return dispatch(result);
-  };
-};
+// export const getAllRoutes = () => {
+//   return async (dispatch: any) => {
+//     const result: GetAllRoutes = {
+//       type: GET_ALL_ROUTES,
+//       payload: [],
+//     };
+//     const response = await fetch("//TODO")
+//       .then((res) => res.json())
+//       .then((_result) => {
+//         result.payload = _result;
+//       })
+//       .catch((e) => console.log(e));
+//
+//     return dispatch(result);
+//   };
+// };
 
 export const createRoute = (startPoint: Pierse, endPoint: Pierse, sights: Sight[]) => {
   fetch(
