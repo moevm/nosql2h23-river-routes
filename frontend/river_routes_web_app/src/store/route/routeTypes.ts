@@ -2,6 +2,10 @@ export const GET_ALL_ROUTES = "GET_ALL_ROUTES";
 
 export const GET_ALL_SIGHTS = "GET_ALL_SIGHTS";
 
+export const GET_ALL_PIERSES = "GET_ALL_PIERSES";
+
+export const CREATE_ROUTE = "CREATE_ROUTE";
+
 export interface Sight {
   id: number;
   title: string;
@@ -38,6 +42,8 @@ export interface Pierse {
 
 export interface DefaultState {
   allSights: Sight[];
+  allPierses: Pierse[];
+  allRoutes: Route[];
 }
 
 export interface GetAllSights {
@@ -45,4 +51,19 @@ export interface GetAllSights {
   payload: Sight[];
 }
 
-export type routeTypes = GetAllSights | DefaultState;
+export interface GetAllPierses {
+  type: typeof GET_ALL_PIERSES;
+  payload: Pierse[];
+}
+
+export interface GetAllRoutes {
+  type: typeof GET_ALL_ROUTES;
+  payload: Route[];
+}
+
+export interface CreateRoute {
+  type: typeof CREATE_ROUTE;
+  payload: Route[];
+}
+
+export type routeTypes = GetAllSights | DefaultState | GetAllPierses | CreateRoute;

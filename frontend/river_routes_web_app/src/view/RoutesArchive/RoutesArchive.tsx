@@ -21,6 +21,7 @@ import routes from "@src/data/routes.json";
 import { useDebounce } from "@src/utils/useDebounce";
 import { exportFile, uploadFile } from "@src/utils/toolFunctions";
 import { Page } from "@src/components/Page/Page";
+import { useSelector } from "react-redux";
 
 const useStyles = makeStyles((theme) => ({
   tableCell: {
@@ -43,6 +44,7 @@ const defaultState = (): FormState => ({
 });
 
 export const RoutesArchive = () => {
+  const _allRoutes: Route[] = useSelector((state: any) => state.route.allRoutes);
   const [allRoutes, setAllRoutes] = useState<Route[]>(JSON.parse(JSON.stringify(routes)));
   const classes = useStyles();
   const [form, setForm] = useState(defaultState());
@@ -50,6 +52,12 @@ export const RoutesArchive = () => {
   const [filteredRoutes, setFiltetedRoutes] = useState<Route[]>(allRoutes);
   const [startPoint, setStartPoint] = useState(null);
   const [endPoint, setEndPoint] = useState(null);
+
+  useEffect(() => {
+    if (_allRoutes.length) {
+      setAllRoutes((prevState) => prevState.concat(_allRoutes));
+    }
+  }, [_allRoutes]);
 
   const onFilterChangeHandler = (e: any) => {
     const { name, value } = e.target;

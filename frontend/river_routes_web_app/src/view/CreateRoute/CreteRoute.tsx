@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Page } from "@src/components/Page/Page";
-import { Box, Button, Container, makeStyles } from "@material-ui/core";
+import { Box, Button, Container, makeStyles, Snackbar } from "@material-ui/core";
 import { Camera, CameraFlyTo, Entity, Polyline, PolylineCollection, Viewer } from "resium";
 import pierses from "@src/data/pierses.json";
 import sigths from "@src/data/sights.json";
@@ -8,6 +8,9 @@ import { Pierse, Sight } from "@src/store/route/routeTypes";
 import { Cartesian3, Color, InterpolationAlgorithm } from "cesium";
 import * as Cesium from "cesium";
 import { MapPoint } from "@src/components/MapPoint/MapPoint";
+import { useSelector } from "react-redux";
+import MuiAlert, { AlertProps } from "@material-ui/lab/Alert";
+import { createRoute } from "@src/store/route/routeActions";
 
 const useStyles = makeStyles((theme) => ({
   mainContainer: {
@@ -18,6 +21,9 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
+function Alert(props: AlertProps) {
+  return <MuiAlert elevation={6} variant="filled" {...props} />;
+}
 //
 export const CreateRoute = () => {
   const classes = useStyles();
@@ -25,9 +31,10 @@ export const CreateRoute = () => {
   const [selectedSights, setSelectedSights] = useState<Sight[]>([]);
   const [startPoint, setStartPoint] = useState<Pierse>(null);
   const [endPoint, setEndPoint] = useState<Pierse>(null);
+  const [open, setOpen] = useState(false);
 
-  const allSights: Sight[] = JSON.parse(JSON.stringify(sigths));
-  const allPierses: Pierse[] = JSON.parse(JSON.stringify(pierses));
+  const allSights: Sight[] = useSelector((state: any) => state.route.allSights);
+  const allPierses: Pierse[] = useSelector((state: any) => state.route.allPierses);
 
   const onSightClickHandle = (id: number) => {
     const ifAlreadyExisted = selectedSights.find((sight) => sight.id === id);
@@ -35,6 +42,15 @@ export const CreateRoute = () => {
       setSelectedSights((prevState) => prevState.filter((sight) => sight.id !== ifAlreadyExisted.id));
     } else setSelectedSights((prevState) => [...prevState, allSights.find((elem) => elem.id === id)]);
   };
+
+  const onClickCreateRouteHandler = () => {
+    if (selectedSights.length && startPoint && endPoint) {
+      createRoute(startPoint, endPoint, selectedSights);
+    } else {
+      setOpen(true);
+    }
+  };
+
   const onPierseCkickHandle = (clickElement: Pierse) => {
     if (!startPoint && !endPoint) {
       setStartPoint(clickElement);
@@ -156,8 +172,15 @@ export const CreateRoute = () => {
           ))}
         </Viewer>
         <Box paddingTop={"1em"}>
-          <Button variant={"outlined"}>Построить маршрут</Button>
+          <Button variant={"outlined"} onClick={onClickCreateRouteHandler}>
+            Построить маршрут
+          </Button>
         </Box>
+        <Snackbar open={open} autoHideDuration={6000} onClose={() => setOpen(false)}>
+          <Alert onClose={() => setOpen(false)} severity="error">
+            Вы не выбрали необходимые точки маршрута
+          </Alert>
+        </Snackbar>
       </Container>
     </Page>
   );
