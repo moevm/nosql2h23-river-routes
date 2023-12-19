@@ -12,10 +12,9 @@ import java.util.Optional;
 @Repository
 public interface WaterRepository extends Neo4jRepository<WaterNode, Long> {
 
-    @Query("MATCH (n:Water) RETURN n limit 50")
+    @Query("MATCH (n:Water) RETURN n")
     List<WaterNode> getWaters();
 
-    @Query("MATCH path = shortestPath((startNode:Pier {lat: 59.9240966})-[*..10]-(endNode:Pier {lat: 59.924088})) RETURN path;")
-
-    Iterable<WaterNode> getPath();
+    @Query("MATCH path = shortestPath((startNode:Pier {lat: :startLat, lon: :startLon})-[*..10]-(endNode:Pier {lat: :endLat, lon: :endLon})) RETURN path;")
+    Iterable<WaterNode> getPath(double startLat, double startLon, double endLat, double endLon);
 }

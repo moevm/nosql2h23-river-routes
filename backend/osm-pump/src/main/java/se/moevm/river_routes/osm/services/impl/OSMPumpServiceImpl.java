@@ -12,9 +12,9 @@ import se.moevm.river_routes.osm.repository.PierRepository;
 import se.moevm.river_routes.osm.repository.SightRepository;
 import se.moevm.river_routes.osm.repository.WaterRepository;
 import se.moevm.river_routes.osm.services.OSMPumpService;
+import se.moevm.river_routes.osm.services.ParseService;
 
 import java.time.OffsetDateTime;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -32,43 +32,47 @@ public class OSMPumpServiceImpl implements OSMPumpService {
     private static final double PIER_DISTANCE_THRESHOLD = 0.001;
     private static final double SIGHT_OBSERVATION_THRESHOLD = 0.002;
 
+    private static final double MIN_LATITUDE = 59.94;
+    private static final double MAX_LATITUDE = 59.95;
+    private static final double MIN_LONGITUDE = 30.32;
+    private static final double MAX_LONGITUDE = 30.34;
+
+    private final ParseService parseService;
+
     @Override
     public boolean pumpAllData() {
         try {
-  //          sightRepository.deleteAll();
-//            List<WaterNode> waterNodes = getAllWater();
-//            log.info("found {} water nodes", waterNodes.size());
-//            linkWaterNodes(waterNodes);
-//            log.info("water nodes linked");
-//
-//            List<PierNode> pierNodes = getAllPierces();
-//            log.info("found {} pier nodes", pierNodes.size());
-//            linkPierWithWater(pierNodes, waterNodes);
-//            log.info("pier nodes linked");
-//
-            //   List<SightNode> sightNodes = getAllSights().stream().limit(20).toList();
-//            log.info("found {} sight nodes", sightNodes.size());
-//            linkSightWithWater(sightNodes, waterNodes);
-//            log.info("sight nodes linked");
-//
-//            log.info("saving...");
+            sightRepository.deleteAll();
+            waterRepository.deleteAll();
+            pierRepository.deleteAll();
+
+            List<WaterNode> waterNodes =  parseService.getAllWater();
+            log.info("found {} water nodes", waterNodes.size());
+            waterNodes.forEach(waterNode -> System.out.println(waterNode.toString()));
+
+            List<PierNode> pierNodes = parseService.getAllPierces();
+            log.info("found {} pier nodes", pierNodes.size());
+
+            List<SightNode> sightNodes = parseService.getAllSights();
+            log.info("found {} sight nodes", sightNodes.size());
+
+            log.info("saving...");
 //            waterRepository.saveAll(waterNodes);
 //            pierRepository.saveAll(pierNodes);
-            //    sightRepository.saveAll(sightNodes);
+//            sightRepository.saveAll(sightNodes);
             log.info("saved");
 
-            System.out.println(feignClient.getPierNodes());
-            System.out.println("!!!!!");
-            System.out.println(feignClient.getSightNodes());
-            System.out.println("????");
-            System.out.println(feignClient.getRiverNodesRU("Нева"));
             return true;
         } catch (Throwable e) {
-//            waterRepository.deleteAll();
-//            sightRepository.deleteAll();
-//            pierRepository.deleteAll();
+            waterRepository.deleteAll();
+            sightRepository.deleteAll();
+            pierRepository.deleteAll();
             return false;
         }
+    }
+
+    private boolean isWithinRectangularArea(double lat, double lon) {
+        return lat >= MIN_LATITUDE && lat <= MAX_LATITUDE && lon >= MIN_LONGITUDE && lon <= MAX_LONGITUDE;
     }
 
     private double distance(double x1, double y1, double x2, double y2) {
@@ -81,6 +85,7 @@ public class OSMPumpServiceImpl implements OSMPumpService {
                 .filter(x -> x.getMembers() != null)
                 .flatMap(x -> x.getMembers().stream())
                 .flatMap(x -> x.getGeometry().stream())
+                .filter(x -> isWithinRectangularArea(x.getLat(), x.getLon()))
                 .distinct()
                 .map(x -> WaterNode.builder()
                         .lat(x.getLat())
@@ -96,6 +101,7 @@ public class OSMPumpServiceImpl implements OSMPumpService {
                 .flatMap(x -> x.getMembers().stream())
                 .filter(x -> x.getGeometry() != null)
                 .flatMap(x -> x.getGeometry().stream())
+                .filter(x -> isWithinRectangularArea(x.getLat(), x.getLon()))
                 .distinct()
                 .map(x -> PierNode.builder()
                         .lat(x.getLat())
@@ -106,11 +112,9 @@ public class OSMPumpServiceImpl implements OSMPumpService {
     }
 
     private List<SightNode> getAllSights() {
-        System.out.println("@@@@@@");
-        System.out.println("@@@@@@1");
-
         return feignClient.getSightNodes().getElements().stream()
                 .filter(x -> Objects.equals(x.getType(), "node"))
+                .filter(x -> isWithinRectangularArea(x.getLat(), x.getLon()))
                 .distinct()
                 .map(x -> SightNode.builder()
                         .title(x.getTags().getName())
@@ -130,12 +134,6 @@ public class OSMPumpServiceImpl implements OSMPumpService {
                 var node2 = waterNodes.get(j);
                 if (i != j && distance(node1.getLat(), node1.getLon(),
                         node2.getLat(), node2.getLon()) <= WATER_DISTANCE_THRESHOLD) {
-                    if (node1.getNeighbours() == null) {
-                        node1.setNeighbours(new ArrayList<>());
-                    }
-                    if (node2.getNeighbours() == null) {
-                        node2.setNeighbours(new ArrayList<>());
-                    }
                     node1.addNeighbour(node2);
                     node2.addNeighbour(node1);
                 }
@@ -148,23 +146,16 @@ public class OSMPumpServiceImpl implements OSMPumpService {
             var water = waterNodes.get(i);
             for (int j = 0; j < pierNodes.size(); j++) {
                 var pier = pierNodes.get(j);
-                if (pier.getNeighbours() == null) {
-                    pier.setNeighbours(new ArrayList<>());
-                }
+
                 if (i != j && distance(water.getLat(), water.getLon(),
                         pier.getLat(), pier.getLon()) <= PIER_DISTANCE_THRESHOLD) {
-                    if (water.getPiers() == null) {
-                        water.setPiers(new ArrayList<>());
-                    }
                     water.addPier(pier);
-                    pier.addNeighbour(water);
                 }
             }
         }
     }
 
     private void linkSightWithWater(List<SightNode> sightNodes, List<WaterNode> waterNodes) {
-
         for (int i = 0; i < waterNodes.size(); i++) {
             var water = waterNodes.get(i);
             for (int j = 0; j < sightNodes.size(); j++) {
@@ -173,11 +164,7 @@ public class OSMPumpServiceImpl implements OSMPumpService {
 
                 if (i != j && distance(water.getLat(), water.getLon(),
                         sight.getLat(), sight.getLon()) <= SIGHT_OBSERVATION_THRESHOLD) {
-                    if (water.getSights() == null) {
-                        water.setSights(new ArrayList<>());
-                    }
                     water.addSight(sight);
-                    sight.addObservationFromWater(water);
                 }
             }
         }

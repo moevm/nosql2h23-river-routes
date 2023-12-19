@@ -44,5 +44,4 @@ public class RouteData {
 
     @Relationship(type = "OBSERVES", direction = Relationship.Direction.OUTGOING)
     private final List<SightNode> observables = new ArrayList<>();
-
 }

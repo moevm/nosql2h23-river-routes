@@ -16,7 +16,6 @@ import java.util.List;
 @Builder
 @AllArgsConstructor
 @RequiredArgsConstructor
-@ToString(exclude = {"neighbours", "piers"})
 @Immutable
 @Node("Water")
 public class WaterNode {
@@ -32,19 +31,16 @@ public class WaterNode {
     private Double lon;
 
     @Relationship(type = "WATER_WAY", direction = Relationship.Direction.OUTGOING)
-    private List<WaterWay> neighbours = new ArrayList<>();
+    private final List<WaterNode> neighbours = new ArrayList<>();
 
     @Relationship(type = "PIER_WAY", direction = Relationship.Direction.OUTGOING)
-    private List<PierNode> piers = new ArrayList<>();
+    private final List<PierNode> piers = new ArrayList<>();
 
     @Relationship(type = "SIGHT_OBSERVE", direction = Relationship.Direction.OUTGOING)
-    private List<SightNode> sights = new ArrayList<>();
+    private final List<SightNode> sights = new ArrayList<>();
 
     public void addNeighbour(WaterNode node) {
-        neighbours.add(WaterWay.builder()
-                        .node(node)
-                        .length(getRange(node))
-                        .build());
+        neighbours.add(node);
     }
 
     public void addPier(PierNode node) {
@@ -52,13 +48,22 @@ public class WaterNode {
     }
 
     public void addSight(SightNode node) {
-        if (sights == null) {
-            sights = new ArrayList<>();
-        }
         sights.add(node);
     }
 
     double getRange(WaterNode node) {
         return Math.sqrt(Math.pow(node.getLat() - this.lat, 2) + Math.pow(node.getLon() - this.lon, 2));
+    }
+
+    @Override
+    public String toString() {
+        return "WaterNode{" +
+                "id=" + id +
+                ", lat=" + lat +
+                ", lon=" + lon +
+                ", neighbours=" + neighbours.size() +
+                ", piers=" + piers.size() +
+                ", sights=" + sights.size() +
+                '}';
     }
 }
