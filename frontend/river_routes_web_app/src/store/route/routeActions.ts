@@ -65,7 +65,7 @@ export const getAllPierses = () => {
 // };
 
 export const createRoute = async (startPoint: Pierse, endPoint: Pierse, sights: Sight[]) => async (dispatch: any) => {
-  const response = await fetch("https://example.com/profile", {
+  fetch("https://example.com/profile", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",

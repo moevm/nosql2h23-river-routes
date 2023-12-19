@@ -8,7 +8,7 @@ import { Pierse, Sight } from "@src/store/route/routeTypes";
 import { Cartesian3, Color, InterpolationAlgorithm } from "cesium";
 import * as Cesium from "cesium";
 import { MapPoint } from "@src/components/MapPoint/MapPoint";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import MuiAlert, { AlertProps } from "@material-ui/lab/Alert";
 import { createRoute } from "@src/store/route/routeActions";
 
@@ -27,7 +27,7 @@ function Alert(props: AlertProps) {
 //
 export const CreateRoute = () => {
   const classes = useStyles();
-
+  const dispatch = useDispatch();
   const [selectedSights, setSelectedSights] = useState<Sight[]>([]);
   const [startPoint, setStartPoint] = useState<Pierse>(null);
   const [endPoint, setEndPoint] = useState<Pierse>(null);
@@ -45,7 +45,7 @@ export const CreateRoute = () => {
 
   const onClickCreateRouteHandler = () => {
     if (selectedSights.length && startPoint && endPoint) {
-      createRoute(startPoint, endPoint, selectedSights);
+      dispatch<any>(createRoute(startPoint, endPoint, selectedSights));
     } else {
       setOpen(true);
     }
