@@ -1,4 +1,5 @@
 import {
+  CREATE_ROUTE,
   GET_ALL_PIERSES,
   GET_ALL_ROUTES,
   GET_ALL_SIGHTS,
@@ -63,16 +64,21 @@ export const getAllPierses = () => {
 //   };
 // };
 
-export const createRoute = (startPoint: Pierse, endPoint: Pierse, sights: Sight[]) => {
-  fetch(
-    `//TODO?startPoint=${JSON.stringify(startPoint)}&endPoint=${JSON.stringify(endPoint)}&sights=${JSON.stringify(
-      sights,
-    )}`,
-  )
+export const createRoute = async (startPoint: Pierse, endPoint: Pierse, sights: Sight[]) => async (dispatch: any) => {
+  const response = await fetch("https://example.com/profile", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      startPoint: startPoint,
+      endPoint: endPoint,
+      sights: sights,
+    }),
+  })
     .then((res) => res.json())
     .then((_result) => {
-      const allRoutes: Route[] = JSON.parse(JSON.stringify(routes));
-      // fs.appendFile("../../data/routes.json", JSON.stringify(allRoutes.concat(_result)), (e) => console.log(e));
+      return dispatch({ type: CREATE_ROUTE, payload: _result });
     })
     .catch((e) => console.log(e));
 };
