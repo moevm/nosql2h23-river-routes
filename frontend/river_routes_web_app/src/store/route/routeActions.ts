@@ -1,17 +1,13 @@
 import {
   CREATE_ROUTE,
+  CreateRoute,
   GET_ALL_PIERSES,
-  GET_ALL_ROUTES,
   GET_ALL_SIGHTS,
   GetAllPierses,
-  GetAllRoutes,
   GetAllSights,
   Pierse,
-  Route,
   Sight,
 } from "@src/store/route/routeTypes";
-import * as fs from "fs";
-import routes from "@src/data/routes.json";
 
 export const getAllSights = () => {
   return async (dispatch: any) => {
@@ -64,7 +60,11 @@ export const getAllPierses = () => {
 //   };
 // };
 
-export const createRoute = async (startPoint: Pierse, endPoint: Pierse, sights: Sight[]) => async (dispatch: any) => {
+export const createRoute = (startPoint: Pierse, endPoint: Pierse, sights: Sight[]) => (dispatch: any) => {
+  const result: CreateRoute = {
+    type: CREATE_ROUTE,
+    payload: null,
+  };
   fetch("https://example.com/profile", {
     method: "POST",
     headers: {
@@ -78,7 +78,9 @@ export const createRoute = async (startPoint: Pierse, endPoint: Pierse, sights: 
   })
     .then((res) => res.json())
     .then((_result) => {
-      return dispatch({ type: CREATE_ROUTE, payload: _result });
+      result.payload = _result;
     })
     .catch((e) => console.log(e));
+
+  return dispatch(result);
 };

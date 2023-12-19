@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Page } from "@src/components/Page/Page";
 import { Box, Button, Container, makeStyles, Snackbar } from "@material-ui/core";
 import { Camera, CameraFlyTo, Entity, Polyline, PolylineCollection, Viewer } from "resium";
@@ -10,7 +10,7 @@ import * as Cesium from "cesium";
 import { MapPoint } from "@src/components/MapPoint/MapPoint";
 import { useDispatch, useSelector } from "react-redux";
 import MuiAlert, { AlertProps } from "@material-ui/lab/Alert";
-import { createRoute } from "@src/store/route/routeActions";
+import { createRoute, getAllPierses, getAllSights } from "@src/store/route/routeActions";
 
 const useStyles = makeStyles((theme) => ({
   mainContainer: {
@@ -35,6 +35,11 @@ export const CreateRoute = () => {
 
   const allSights: Sight[] = useSelector((state: any) => state.route.allSights);
   const allPierses: Pierse[] = useSelector((state: any) => state.route.allPierses);
+
+  useEffect(() => {
+    if (!allPierses.length) dispatch<any>(getAllPierses());
+    if (!allSights.length) dispatch<any>(getAllSights());
+  }, [allPierses, allSights]);
 
   const onSightClickHandle = (id: number) => {
     const ifAlreadyExisted = selectedSights.find((sight) => sight.id === id);
