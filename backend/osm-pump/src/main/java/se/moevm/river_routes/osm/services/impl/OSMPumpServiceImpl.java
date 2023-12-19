@@ -35,7 +35,7 @@ public class OSMPumpServiceImpl implements OSMPumpService {
     @Override
     public boolean pumpAllData() {
         try {
-            sightRepository.deleteAll();
+  //          sightRepository.deleteAll();
 //            List<WaterNode> waterNodes = getAllWater();
 //            log.info("found {} water nodes", waterNodes.size());
 //            linkWaterNodes(waterNodes);
@@ -46,7 +46,7 @@ public class OSMPumpServiceImpl implements OSMPumpService {
 //            linkPierWithWater(pierNodes, waterNodes);
 //            log.info("pier nodes linked");
 //
-            List<SightNode> sightNodes = getAllSights().stream().limit(20).toList();
+            //   List<SightNode> sightNodes = getAllSights().stream().limit(20).toList();
 //            log.info("found {} sight nodes", sightNodes.size());
 //            linkSightWithWater(sightNodes, waterNodes);
 //            log.info("sight nodes linked");
@@ -54,15 +54,19 @@ public class OSMPumpServiceImpl implements OSMPumpService {
 //            log.info("saving...");
 //            waterRepository.saveAll(waterNodes);
 //            pierRepository.saveAll(pierNodes);
-            sightRepository.saveAll(sightNodes);
+            //    sightRepository.saveAll(sightNodes);
             log.info("saved");
 
-            System.out.println(sightNodes);
+            System.out.println(feignClient.getPierNodes());
+            System.out.println("!!!!!");
+            System.out.println(feignClient.getSightNodes());
+            System.out.println("????");
+            System.out.println(feignClient.getRiverNodesRU("Нева"));
             return true;
         } catch (Throwable e) {
-            waterRepository.deleteAll();
-            sightRepository.deleteAll();
-            pierRepository.deleteAll();
+//            waterRepository.deleteAll();
+//            sightRepository.deleteAll();
+//            pierRepository.deleteAll();
             return false;
         }
     }
@@ -87,9 +91,10 @@ public class OSMPumpServiceImpl implements OSMPumpService {
     }
 
     private List<PierNode> getAllPierces() {
-        return feignClient.getPierNodes().getElements().stream()
+        return feignClient.getPierNodes().getElements().stream().filter(Objects::nonNull)
                 .filter(x -> x.getMembers() != null)
                 .flatMap(x -> x.getMembers().stream())
+                .filter(x -> x.getGeometry() != null)
                 .flatMap(x -> x.getGeometry().stream())
                 .distinct()
                 .map(x -> PierNode.builder()
@@ -111,7 +116,7 @@ public class OSMPumpServiceImpl implements OSMPumpService {
                         .title(x.getTags().getName())
                         .lat(x.getLat())
                         .lon(x.getLon())
-                        .wikiLink(x.getTags().getWebsite())
+                        .website(x.getTags().getWebsite())
                         .updatedAt(OffsetDateTime.now())
                         .build()
                 )

@@ -11,9 +11,10 @@ import java.util.List;
 @Data
 public class GeoNode {
 
-    Long ref;
-    String type;
-    String role;
-    List<Location2D> geometry;
-    String name;
+    private Long ref;
+    private String type;
+    private String role;
+
+    private List<Location2D> geometry;
+    private String name;
 }
