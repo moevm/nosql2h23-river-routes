@@ -13,15 +13,15 @@ export const TopBar = () => {
       className={classes.root}
     >
       <div style={{ width: "20%", display: "flex", justifyContent: "center", alignItems: "center" }}>
-        <Link className={classes.name} to={"/"}>
+        <Link className={classes.name} to={"/"} style={{ textDecoration: "none" }}>
           RiverRoutes
         </Link>
       </div>
       <div className={classes.menuItemsContainer}>
-        <Link className={classes.menuItems} to={"/"}>
+        <Link className={classes.menuItems} to={"/"} style={{ textDecoration: "none" }}>
           Главная
         </Link>
-        <Link className={classes.menuItems} to={"/archive"}>
+        <Link className={classes.menuItems} to={"/archive"} style={{ textDecoration: "none" }}>
           Водные маршруты
         </Link>
         <span className={classes.menuItems}>FAQ</span>

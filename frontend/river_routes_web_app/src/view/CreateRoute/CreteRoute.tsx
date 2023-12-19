@@ -107,9 +107,7 @@ export const CreateRoute = () => {
             {selectedSights.length ? (
               selectedSights.map((elem, key) => (
                 <li key={key}>
-                  <p>
-                    {elem.title} {elem.lat} {elem.lon}
-                  </p>
+                  <p>{elem.title}</p>
                 </li>
               ))
             ) : (

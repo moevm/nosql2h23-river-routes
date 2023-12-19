@@ -28,13 +28,13 @@ export const HomePage = () => {
             <p className={classes.title}>ЧЕРЕЗ ПИТЕР ПО ВОДЕ</p>
           </div>
           <div className={classes.subtitleDiv}>
-            <Link className={classes.subtitle} to={"create_route"}>
+            <Link className={classes.subtitle} to={"create_route"} style={{ textDecoration: "none" }}>
               Выбери свой маршрут
             </Link>
           </div>
 
-          <div className={classes.subtitleDiv}>
-            <Link className={classes.subtitle} to={"archive"}>
+          <div className={classes.subtitleDiv} style={{ marginTop: "0.5em" }}>
+            <Link className={classes.subtitle} to={"archive"} style={{ textDecoration: "none" }}>
               Рекомендации
             </Link>
           </div>
