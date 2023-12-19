@@ -12,9 +12,9 @@ import se.moevm.river_routes.osm.repository.PierRepository;
 import se.moevm.river_routes.osm.repository.SightRepository;
 import se.moevm.river_routes.osm.repository.WaterRepository;
 import se.moevm.river_routes.osm.services.OSMPumpService;
+import se.moevm.river_routes.osm.services.ParseService;
 
 import java.time.OffsetDateTime;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -37,6 +37,8 @@ public class OSMPumpServiceImpl implements OSMPumpService {
     private static final double MIN_LONGITUDE = 30.32;
     private static final double MAX_LONGITUDE = 30.34;
 
+    private final ParseService parseService;
+
     @Override
     public boolean pumpAllData() {
         try {
@@ -44,29 +46,24 @@ public class OSMPumpServiceImpl implements OSMPumpService {
             waterRepository.deleteAll();
             pierRepository.deleteAll();
 
-            List<WaterNode> waterNodes = getAllWater();
+            List<WaterNode> waterNodes =  parseService.getAllWater();
             log.info("found {} water nodes", waterNodes.size());
-            linkWaterNodes(waterNodes);
-            log.info("water nodes linked");
+            waterNodes.forEach(waterNode -> System.out.println(waterNode.toString()));
 
-            List<PierNode> pierNodes = getAllPierces().stream().limit(100).toList();
+            List<PierNode> pierNodes = parseService.getAllPierces();
             log.info("found {} pier nodes", pierNodes.size());
-            linkPierWithWater(pierNodes, waterNodes);
-            log.info("pier nodes linked");
 
-            List<SightNode> sightNodes = getAllSights().stream().toList();
+            List<SightNode> sightNodes = parseService.getAllSights();
             log.info("found {} sight nodes", sightNodes.size());
-            linkSightWithWater(sightNodes, waterNodes);
-            log.info("sight nodes linked");
 
             log.info("saving...");
-            waterRepository.saveAll(waterNodes);
-            pierRepository.saveAll(pierNodes);
-            sightRepository.saveAll(sightNodes);
+//            waterRepository.saveAll(waterNodes);
+//            pierRepository.saveAll(pierNodes);
+//            sightRepository.saveAll(sightNodes);
             log.info("saved");
+
             return true;
         } catch (Throwable e) {
-            System.out.println(e.getMessage());
             waterRepository.deleteAll();
             sightRepository.deleteAll();
             pierRepository.deleteAll();
@@ -137,12 +134,6 @@ public class OSMPumpServiceImpl implements OSMPumpService {
                 var node2 = waterNodes.get(j);
                 if (i != j && distance(node1.getLat(), node1.getLon(),
                         node2.getLat(), node2.getLon()) <= WATER_DISTANCE_THRESHOLD) {
-                    if (node1.getNeighbours() == null) {
-                        node1.setNeighbours(new ArrayList<>());
-                    }
-                    if (node2.getNeighbours() == null) {
-                        node2.setNeighbours(new ArrayList<>());
-                    }
                     node1.addNeighbour(node2);
                     node2.addNeighbour(node1);
                 }
@@ -155,16 +146,10 @@ public class OSMPumpServiceImpl implements OSMPumpService {
             var water = waterNodes.get(i);
             for (int j = 0; j < pierNodes.size(); j++) {
                 var pier = pierNodes.get(j);
-                if (pier.getNeighbours() == null) {
-                    pier.setNeighbours(new ArrayList<>());
-                }
+
                 if (i != j && distance(water.getLat(), water.getLon(),
                         pier.getLat(), pier.getLon()) <= PIER_DISTANCE_THRESHOLD) {
-                    if (water.getPiers() == null) {
-                        water.setPiers(new ArrayList<>());
-                    }
                     water.addPier(pier);
-                    pier.addNeighbour(water);
                 }
             }
         }
@@ -179,14 +164,7 @@ public class OSMPumpServiceImpl implements OSMPumpService {
 
                 if (i != j && distance(water.getLat(), water.getLon(),
                         sight.getLat(), sight.getLon()) <= SIGHT_OBSERVATION_THRESHOLD) {
-                    if (water.getSights() == null) {
-                        water.setSights(new ArrayList<>());
-                    }
                     water.addSight(sight);
-                    if (sight.getAvailableFrom() == null) {
-                        sight.setAvailableFrom(new ArrayList<>());
-                    }
-                    sight.addObservationFromWater(water);
                 }
             }
         }
