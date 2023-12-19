@@ -10,10 +10,6 @@ import org.springframework.data.neo4j.core.schema.GeneratedValue;
 import org.springframework.data.neo4j.core.schema.Id;
 import org.springframework.data.neo4j.core.schema.Node;
 import org.springframework.data.neo4j.core.schema.Property;
-import org.springframework.data.neo4j.core.schema.Relationship;
-
-import java.util.ArrayList;
-import java.util.List;
 
 @AllArgsConstructor
 @Getter
@@ -33,13 +29,5 @@ public class PierNode {
 
     @Property("lon")
     private final Double lon;
-
-    @Setter
-    @Relationship(type = "DIRECT_WAY", direction = Relationship.Direction.OUTGOING)
-    private List<WaterNode> neighbours = new ArrayList<>();
-
-    public void addNeighbour(WaterNode node) {
-        neighbours.add(node);
-    }
 
 }

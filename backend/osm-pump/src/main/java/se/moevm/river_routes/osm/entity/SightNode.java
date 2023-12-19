@@ -54,10 +54,4 @@ public class SightNode {
     @Property("updated_at")
     private OffsetDateTime updatedAt;
 
-    @Relationship(type = "OBSERVABLE_FROM", direction = Relationship.Direction.INCOMING)
-    private List<WaterNode> availableFrom = new ArrayList<>();
-
-    public void addObservationFromWater(WaterNode node) {
-        availableFrom.add(node);
-    }
 }
