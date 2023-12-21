@@ -100,7 +100,7 @@ export const CreateRoute = () => {
       title={"Создать маршрут"}
       description={"Создайте свой собственный маршрут и наслаждайтесь прогулкой по воде!"}
     >
-      {!debouncedIsLoadingPierses && !debouncedIsLoadingSights && allSights.length && allPierses.length ? (
+      {allSights.length && allPierses.length ? (
         <Container maxWidth={"lg"} className={classes.mainContainer}>
           <Box>
             <h2>Построить водный маршрут</h2>
