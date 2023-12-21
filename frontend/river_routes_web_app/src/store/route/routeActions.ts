@@ -2,7 +2,9 @@ import {
   CREATE_ROUTE,
   CreateRoute,
   GET_ALL_PIERSES,
+  GET_ALL_PIERSES_R,
   GET_ALL_SIGHTS,
+  GET_ALL_SIGHTS_R,
   GetAllPierses,
   GetAllSights,
   Pierse,
@@ -19,10 +21,9 @@ export const getAllSights = () => {
       .then((res) => res.json())
       .then((_result) => {
         result.payload = _result;
+        return dispatch(result);
       })
       .catch((e) => console.log(e));
-
-    return dispatch(result);
   };
 };
 
@@ -36,10 +37,9 @@ export const getAllPierses = () => {
       .then((res) => res.json())
       .then((_result) => {
         result.payload = _result;
+        return dispatch(result);
       })
       .catch((e) => console.log(e));
-
-    return dispatch(result);
   };
 };
 

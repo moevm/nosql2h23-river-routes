@@ -1,16 +1,17 @@
 import React, { useEffect, useState } from "react";
 import { Page } from "@src/components/Page/Page";
-import { Box, Button, Container, makeStyles, Snackbar } from "@material-ui/core";
+import { Box, Button, CircularProgress, Container, makeStyles, Snackbar } from "@material-ui/core";
 import { Camera, CameraFlyTo, Entity, Polyline, PolylineCollection, Viewer } from "resium";
 import pierses from "@src/data/pierses.json";
 import sigths from "@src/data/sights.json";
-import { Pierse, Sight } from "@src/store/route/routeTypes";
+import { GET_ALL_PIERSES_R, GET_ALL_SIGHTS_R, Pierse, Sight } from "@src/store/route/routeTypes";
 import { Cartesian3, Color, InterpolationAlgorithm } from "cesium";
 import * as Cesium from "cesium";
 import { MapPoint } from "@src/components/MapPoint/MapPoint";
 import { useDispatch, useSelector } from "react-redux";
 import MuiAlert, { AlertProps } from "@material-ui/lab/Alert";
 import { createRoute, getAllPierses, getAllSights } from "@src/store/route/routeActions";
+import { useDebounce } from "@src/utils/useDebounce";
 
 const useStyles = makeStyles((theme) => ({
   mainContainer: {
@@ -36,9 +37,21 @@ export const CreateRoute = () => {
   const allSights: Sight[] = useSelector((state: any) => state.route.allSights);
   const allPierses: Pierse[] = useSelector((state: any) => state.route.allPierses);
 
+  const isLoadingPierses = useSelector((state: any) => state.route.isLoadingPierses);
+  const isLoadingSights = useSelector((state: any) => state.route.isLoadingSights);
+
+  const debouncedIsLoadingPierses = useDebounce(isLoadingPierses, 300);
+  const debouncedIsLoadingSights = useDebounce(isLoadingSights, 300);
+
   useEffect(() => {
-    if (!allPierses.length) dispatch<any>(getAllPierses());
-    if (!allSights.length) dispatch<any>(getAllSights());
+    if (!allPierses.length) {
+      dispatch({ type: GET_ALL_SIGHTS_R });
+      dispatch<any>(getAllPierses());
+    }
+    if (!allSights.length) {
+      dispatch({ type: GET_ALL_PIERSES_R });
+      dispatch<any>(getAllSights());
+    }
   }, [allPierses, allSights]);
 
   const onSightClickHandle = (id: number) => {
@@ -87,16 +100,69 @@ export const CreateRoute = () => {
       title={"Создать маршрут"}
       description={"Создайте свой собственный маршрут и наслаждайтесь прогулкой по воде!"}
     >
-      <Container maxWidth={"lg"} className={classes.mainContainer}>
-        <Box>
-          <h2>Построить водный маршрут</h2>
-          <p>
-            Для того, чтобы построить свой маршрут, вам необходимо указать начальную и конечную точки маршрута, а также
-            выбрать из предложенного списка, какие достопримечательности вы бы хотели увидеть с воды.
-          </p>
-        </Box>
-        <Box>
-          <h3>1. Выберите, какие достопримечательности вы бы хотели увидеть с воды </h3>
+      {!debouncedIsLoadingPierses && !debouncedIsLoadingSights && allSights.length && allPierses.length ? (
+        <Container maxWidth={"lg"} className={classes.mainContainer}>
+          <Box>
+            <h2>Построить водный маршрут</h2>
+            <p>
+              Для того, чтобы построить свой маршрут, вам необходимо указать начальную и конечную точки маршрута, а
+              также выбрать из предложенного списка, какие достопримечательности вы бы хотели увидеть с воды.
+            </p>
+          </Box>
+          <Box>
+            <h3>1. Выберите, какие достопримечательности вы бы хотели увидеть с воды </h3>
+            <Viewer
+              style={{ width: "100%", height: "800px" }}
+              geocoder={false}
+              timeline={false}
+              navigationHelpButton={false}
+              homeButton={false}
+              baseLayerPicker={false}
+            >
+              <Camera />
+              <CameraFlyTo
+                duration={2}
+                destination={Cartesian3.fromDegrees(
+                  allPierses[Math.floor(allPierses.length / 2)].lon,
+                  allPierses[Math.floor(allPierses.length / 2)].lat,
+                  3000,
+                )}
+                once={true}
+              />
+              {allSights.map((elem: Sight) => (
+                <MapPoint
+                  data={elem}
+                  onClickHandler={() => onSightClickHandle(elem.id)}
+                  isSelected={false}
+                  isSight={true}
+                />
+              ))}
+            </Viewer>
+            <ul>
+              {selectedSights.length ? (
+                selectedSights.map((elem, key) => (
+                  <li key={key}>
+                    <p>{elem.title}</p>
+                  </li>
+                ))
+              ) : (
+                <p>Вы не выбрали ни одной достопримечательности</p>
+              )}
+            </ul>
+            {/*<ul>*/}
+            {/*  {selectedSights.length ? (*/}
+            {/*  ) : (<p>Вы не выбрали ни одной достопримечательности</p>)}*/}
+            {/*</ul>*/}
+          </Box>
+          <Box>
+            <h3>2. Выберите начальную и конечную точки маршрута на карте</h3>
+            <p>
+              Начальная точка: {startPoint?.lat}, {startPoint?.lon}
+            </p>
+            <p>
+              Конечная точка: {endPoint?.lat}, {endPoint?.lon}
+            </p>
+          </Box>
           <Viewer
             style={{ width: "100%", height: "800px" }}
             geocoder={false}
@@ -115,78 +181,31 @@ export const CreateRoute = () => {
               )}
               once={true}
             />
-            {allSights.map((elem: Sight) => (
+            {allPierses.map((elem: Pierse) => (
               <MapPoint
                 data={elem}
-                onClickHandler={() => onSightClickHandle(elem.id)}
-                isSelected={false}
-                isSight={true}
+                onClickHandler={() => onPierseCkickHandle(elem)}
+                isSight={false}
+                isSelected={elem.id === startPoint?.id || elem.id === endPoint?.id}
               />
             ))}
           </Viewer>
-          <ul>
-            {selectedSights.length ? (
-              selectedSights.map((elem, key) => (
-                <li key={key}>
-                  <p>{elem.title}</p>
-                </li>
-              ))
-            ) : (
-              <p>Вы не выбрали ни одной достопримечательности</p>
-            )}
-          </ul>
-          {/*<ul>*/}
-          {/*  {selectedSights.length ? (*/}
-          {/*  ) : (<p>Вы не выбрали ни одной достопримечательности</p>)}*/}
-          {/*</ul>*/}
-        </Box>
-        <Box>
-          <h3>2. Выберите начальную и конечную точки маршрута на карте</h3>
-          <p>
-            Начальная точка: {startPoint?.lat}, {startPoint?.lon}
-          </p>
-          <p>
-            Конечная точка: {endPoint?.lat}, {endPoint?.lon}
-          </p>
-        </Box>
-        <Viewer
-          style={{ width: "100%", height: "800px" }}
-          geocoder={false}
-          timeline={false}
-          navigationHelpButton={false}
-          homeButton={false}
-          baseLayerPicker={false}
-        >
-          <Camera />
-          <CameraFlyTo
-            duration={2}
-            destination={Cartesian3.fromDegrees(
-              allPierses[Math.floor(allPierses.length / 2)].lon,
-              allPierses[Math.floor(allPierses.length / 2)].lat,
-              3000,
-            )}
-            once={true}
-          />
-          {allPierses.map((elem: Pierse) => (
-            <MapPoint
-              data={elem}
-              onClickHandler={() => onPierseCkickHandle(elem)}
-              isSight={false}
-              isSelected={elem.id === startPoint?.id || elem.id === endPoint?.id}
-            />
-          ))}
-        </Viewer>
-        <Box paddingTop={"1em"}>
-          <Button variant={"outlined"} onClick={onClickCreateRouteHandler}>
-            Построить маршрут
-          </Button>
-        </Box>
-        <Snackbar open={open} autoHideDuration={6000} onClose={() => setOpen(false)}>
-          <Alert onClose={() => setOpen(false)} severity="error">
-            Вы не выбрали необходимые точки маршрута
-          </Alert>
-        </Snackbar>
-      </Container>
+          <Box paddingTop={"1em"}>
+            <Button variant={"outlined"} onClick={onClickCreateRouteHandler}>
+              Построить маршрут
+            </Button>
+          </Box>
+          <Snackbar open={open} autoHideDuration={6000} onClose={() => setOpen(false)}>
+            <Alert onClose={() => setOpen(false)} severity="error">
+              Вы не выбрали необходимые точки маршрута
+            </Alert>
+          </Snackbar>
+        </Container>
+      ) : (
+        <Container maxWidth={"lg"} style={{ display: "flex", justifyContent: "center" }}>
+          <CircularProgress />
+        </Container>
+      )}
     </Page>
   );
 };
