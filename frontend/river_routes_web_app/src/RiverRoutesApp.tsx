@@ -17,10 +17,10 @@ export const RiverRoutesApp = () => {
 
   const dispatch = useDispatch();
 
-  useEffect(() => {
-    dispatch<any>(getAllSights());
-    dispatch<any>(getAllPierses());
-  }, []);
+  // useEffect(() => {
+  //   dispatch<any>(getAllSights());
+  //   dispatch<any>(getAllPierses());
+  // }, []);
 
   return (
     <div
