@@ -51,9 +51,9 @@ public class Controller {
 
     @PostMapping("/path")
     public ResponseEntity<?> getPath(@RequestBody RouteRequest request) {
-        log.info("get-path");
+        log.info("get-path: {} {} {}", request.getStartPoint(), request.getEndPoint(), request.getSights());
         return ResponseEntity.ok(routeService.findPathBetweenPiersIncludeSights(
-                request.getStartPoint(), request.getEndPoint(), request.getSight()));
+                request.getStartPoint(), request.getEndPoint(), request.getSights()));
     }
 
 }

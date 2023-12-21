@@ -1,5 +1,6 @@
 package se.moevm.river_routes.osm.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 import org.neo4j.driver.util.Immutable;
 import org.springframework.data.neo4j.core.schema.GeneratedValue;
@@ -31,6 +32,7 @@ public class WaterNode {
     private Double lon;
 
     @Relationship(type = "WATER_WAY", direction = Relationship.Direction.OUTGOING)
+    @JsonIgnore
     private final List<WaterNode> neighbours = new ArrayList<>();
 
     @Relationship(type = "PIER_WAY", direction = Relationship.Direction.OUTGOING)

@@ -36,12 +36,36 @@ public class RouteServiceImpl implements RouteService {
 
     @Override
     public List<WaterNode> findPathBetweenPiersIncludeSights(PierNode startPier, PierNode endPier, List<SightNode> sightsToInclude) {
-        WaterNode start = parseService.getAllWater().stream().filter(waterNode -> waterNode.getPiers().contains(startPier)).findFirst().orElse(null);
-        WaterNode end = parseService.getAllWater().stream().filter(waterNode -> waterNode.getPiers().contains(endPier)).findFirst().orElse(null);
+        WaterNode start = null;
+        WaterNode end = null;
+        for (WaterNode waterNode : parseService.getAllWater()) {
+            for (PierNode pierNode : waterNode.getPiers()) {
+                if (Objects.equals(pierNode.getId(), startPier.getId())) {
+                    start = waterNode;
+                }
+                if (Objects.equals(pierNode.getId(), endPier.getId())) {
+                    end = waterNode;
+                }
+            }
+        }
         List<WaterNode> waterToVisit = new ArrayList<>();
         waterToVisit.add(start);
+
+        for (WaterNode waterNode : parseService.getAllWater()) {
+            for (SightNode sightNode : waterNode.getSights()) {
+                if (sightsToInclude.contains(sightNode)) {
+                    waterToVisit.add(waterNode);
+                }
+            }
+        }
         sightsToInclude.forEach(sight -> {
-           waterToVisit.add(parseService.getAllWater().stream().filter(waterNode -> waterNode.getSights().contains(sight)).findFirst().orElse(null));
+            for (WaterNode waterNode : parseService.getAllWater()) {
+                for (SightNode sightNode : waterNode.getSights()) {
+                    if (Objects.equals(sightNode.getId(), sight.getId())) {
+                        waterToVisit.add(waterNode);
+                    }
+                }
+            }
         });
         waterToVisit.add(end);
 
@@ -57,6 +81,7 @@ public class RouteServiceImpl implements RouteService {
             path.addAll(g.depthFirstSearch(waterToVisit.get(i), waterToVisit.get(i+1)));
         }
 
+        System.out.println(path);
         return path;
     }
 
@@ -81,7 +106,6 @@ public class RouteServiceImpl implements RouteService {
             Set<WaterNode> visited = new HashSet<>();
             List<WaterNode> path = new ArrayList<>();
             Stack<WaterNode> stack = new Stack<>();
-
             stack.push(start);
             visited.add(start);
 
