@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import {
   Box,
   Button,
+  CircularProgress,
   Container,
   FormControl,
   Grid,
@@ -50,6 +51,7 @@ export const RoutesArchive = () => {
   const [form, setForm] = useState(defaultState());
   const debouncedFilterValue = useDebounce(form, 200);
   const isLoadingRoutes = useSelector((state: any) => state.route.isLoadingRoutes);
+  const debouncedIsLoadingRoutes = useDebounce(isLoadingRoutes, 300);
   const dispatch = useDispatch();
   const [filteredRoutes, setFiltetedRoutes] = useState<Route[]>(allRoutes);
   const [startPoint, setStartPoint] = useState(null);
@@ -62,7 +64,7 @@ export const RoutesArchive = () => {
     } else {
       setAllRoutes((prevState) => prevState.concat(_allRoutes));
     }
-  }, [allRoutes]);
+  }, [debouncedIsLoadingRoutes]);
 
   const onFilterChangeHandler = (e: any) => {
     const { name, value } = e.target;
@@ -123,51 +125,50 @@ export const RoutesArchive = () => {
           </Grid>
         </section>
         <section>
-          <Grid container spacing={2}>
-            {allRoutes.length ? (
-              <>
-                <Grid item md={12} lg={5}>
-                  <FormControl fullWidth variant={"outlined"} className={classes.formControl}>
-                    <InputLabel id="demo-simple-select-outlined-label1">Выберите начало маршрута</InputLabel>
-                    <Select
-                      labelId={"demo-simple-select-outlined-label1"}
-                      label={"Выберите начало маршрута"}
-                      value={startPoint ? startPoint : ""}
-                      onChange={(e: any) => {
-                        setStartPoint(e.target.value);
-                      }}
-                    >
-                      <MenuItem value={null}>Все</MenuItem>
-                      {allRoutes.map((route, num) => (
-                        <MenuItem value={route.id} key={num}>
-                          {route.startPoint.lat},{route.startPoint.lon}
-                        </MenuItem>
-                      ))}
-                    </Select>
-                  </FormControl>
-                </Grid>
-                <Grid item md={12} lg={5}>
-                  <FormControl fullWidth variant={"outlined"} className={classes.formControl}>
-                    <InputLabel id="demo-simple-select-outlined-label2">Выберите конец маршрута</InputLabel>
-                    <Select
-                      labelId={"demo-simple-select-outlined-label2"}
-                      label={"Выберите конец маршрута"}
-                      value={endPoint ? endPoint : ""}
-                      onChange={(e: any) => {
-                        setEndPoint(e.target.value);
-                      }}
-                    >
-                      <MenuItem value={null}>Все</MenuItem>
-                      {allRoutes.map((route, num) => (
-                        <MenuItem value={route.id} key={num}>
-                          {route.endPoint.lat},{route.endPoint.lon}
-                        </MenuItem>
-                      ))}
-                    </Select>
-                  </FormControl>
-                </Grid>
-              </>
-            ) : null}
+          <Grid container spacing={3}>
+            <Grid item md={12} lg={4}>
+              <FormControl fullWidth variant={"outlined"} className={classes.formControl}>
+                <InputLabel id="demo-simple-select-outlined-label1">Выберите начало маршрута</InputLabel>
+                <Select
+                  labelId={"demo-simple-select-outlined-label1"}
+                  label={"Выберите начало маршрута"}
+                  value={startPoint ? startPoint : ""}
+                  onChange={(e: any) => {
+                    setStartPoint(e.target.value);
+                  }}
+                >
+                  <MenuItem value={null}>Все</MenuItem>
+                  {allRoutes.length &&
+                    allRoutes.map((route, num) => (
+                      <MenuItem value={route.id} key={num}>
+                        {route.startPoint.lat},{route.startPoint.lon}
+                      </MenuItem>
+                    ))}
+                </Select>
+              </FormControl>
+            </Grid>
+            <Grid item md={12} lg={4}>
+              <FormControl fullWidth variant={"outlined"} className={classes.formControl}>
+                <InputLabel id="demo-simple-select-outlined-label2">Выберите конец маршрута</InputLabel>
+                <Select
+                  labelId={"demo-simple-select-outlined-label2"}
+                  label={"Выберите конец маршрута"}
+                  value={endPoint ? endPoint : ""}
+                  onChange={(e: any) => {
+                    setEndPoint(e.target.value);
+                  }}
+                >
+                  <MenuItem value={null}>Все</MenuItem>
+                  {allRoutes.length &&
+                    allRoutes.map((route, num) => (
+                      <MenuItem value={route.id} key={num}>
+                        {route.endPoint.lat},{route.endPoint.lon}
+                      </MenuItem>
+                    ))}
+                </Select>
+              </FormControl>
+            </Grid>
+
             <Grid item md={12} lg={3}>
               <TextField
                 variant={"outlined"}
@@ -177,47 +178,54 @@ export const RoutesArchive = () => {
                 placeholder={"Дата создания"}
               ></TextField>
             </Grid>
-            <Grid item md={12} lg={5}>
+            <Grid item md={12} lg={8}>
               <TextField
-                placeholder={"Поиск"}
+                placeholder={"Напишите название маршрута"}
                 onChange={onFilterChangeHandler}
                 name={"routeName"}
                 variant={"outlined"}
+                fullWidth={true}
               ></TextField>
             </Grid>
           </Grid>
         </section>
         <section>
-          <Table>
-            <TableHead>
-              <TableRow>
-                <TableCell>Название маршрута</TableCell>
-                <TableCell>Координаты начала</TableCell>
-                <TableCell>Координаты конца</TableCell>
-                <TableCell>Дата создания</TableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {filteredRoutes.length ? (
-                filteredRoutes.map((route, number) => (
-                  <TableRow key={number} onClick={() => (window.location.href = `/routes/${route.id}`)}>
-                    <TableCell className={classes.tableCell}>{route.name}</TableCell>
-                    <TableCell className={classes.tableCell}>
-                      {route.startPoint.lat} {route.startPoint.lon}
-                    </TableCell>
-                    <TableCell className={classes.tableCell}>
-                      {route.endPoint.lat} {route.endPoint.lon}
-                    </TableCell>
-                    <TableCell className={classes.tableCell}>{route.createAt.toString()}</TableCell>
-                  </TableRow>
-                ))
-              ) : (
+          {filteredRoutes.length ? (
+            <Table>
+              <TableHead>
                 <TableRow>
-                  <TableCell>Маршрута с такими данными не найдено</TableCell>
+                  <TableCell>Название маршрута</TableCell>
+                  <TableCell>Координаты начала</TableCell>
+                  <TableCell>Координаты конца</TableCell>
+                  <TableCell>Дата создания</TableCell>
                 </TableRow>
-              )}
-            </TableBody>
-          </Table>
+              </TableHead>
+              <TableBody>
+                {filteredRoutes.length ? (
+                  filteredRoutes.map((route, number) => (
+                    <TableRow key={number} onClick={() => (window.location.href = `/routes/${route.id}`)}>
+                      <TableCell className={classes.tableCell}>{route.name}</TableCell>
+                      <TableCell className={classes.tableCell}>
+                        {route.startPoint.lat} {route.startPoint.lon}
+                      </TableCell>
+                      <TableCell className={classes.tableCell}>
+                        {route.endPoint.lat} {route.endPoint.lon}
+                      </TableCell>
+                      <TableCell className={classes.tableCell}>{route.createAt.toString()}</TableCell>
+                    </TableRow>
+                  ))
+                ) : (
+                  <TableRow>
+                    <TableCell>Маршрута с такими данными не найдено</TableCell>
+                  </TableRow>
+                )}
+              </TableBody>
+            </Table>
+          ) : (
+            <Container maxWidth={"lg"} style={{ display: "flex", justifyContent: "center", padding: "5em" }}>
+              <CircularProgress />
+            </Container>
+          )}
         </section>
       </Container>
     </Page>

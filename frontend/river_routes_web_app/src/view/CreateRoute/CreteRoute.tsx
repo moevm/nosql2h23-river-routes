@@ -55,7 +55,7 @@ export const CreateRoute = () => {
         window.location.href = `/routes/${allRoutes[allRoutes.length - 1].id}`;
       }
     }
-  }, [debounsedIsLoading]);
+  }, [debounsedIsLoading, allRoutes]);
 
   useEffect(() => {
     if (!allPierses.length) {
