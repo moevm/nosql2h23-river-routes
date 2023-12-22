@@ -181,6 +181,7 @@ public class ParseServiceImpl implements ParseService {
 
     @Override
     public List<RouteDataDTO> getAllRoutes() {
+//        System.out.println(routes);
         return routes;
     }
 

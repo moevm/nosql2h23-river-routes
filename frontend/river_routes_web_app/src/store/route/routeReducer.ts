@@ -32,7 +32,7 @@ export const routeReducer = (state = defaultState, action: any) => {
     case GET_ALL_PIERSES:
       return { ...state, allPierses: action.payload, isLoadingPierses: false };
     case CREATE_ROUTE:
-      return { ...state, newId: action.payload, isLoading: false };
+      return { ...state, newId: action.payload.id, allRoutes: [...state.allRoutes, action.payload], isLoading: false };
     case GET_ALL_PIERSES_R:
       return { ...state, isLoadingPierses: true };
     case GET_ALL_SIGHTS_R:

@@ -45,26 +45,33 @@ const defaultState = (): FormState => ({
 });
 
 export const RoutesArchive = () => {
-  const _allRoutes: Route[] = useSelector((state: any) => state.route.allRoutes);
-  const [allRoutes, setAllRoutes] = useState<Route[]>([]);
+  const allRoutes: Route[] = useSelector((state: any) => state.route.allRoutes);
+  // const [allRoutes, setAllRoutes] = useState<Route[]>(_allRoutes);
   const classes = useStyles();
   const [form, setForm] = useState(defaultState());
   const debouncedFilterValue = useDebounce(form, 200);
   const isLoadingRoutes = useSelector((state: any) => state.route.isLoadingRoutes);
   const debouncedIsLoadingRoutes = useDebounce(isLoadingRoutes, 300);
   const dispatch = useDispatch();
-  const [filteredRoutes, setFiltetedRoutes] = useState<Route[]>(allRoutes);
+  const [filteredRoutes, setFiltetedRoutes] = useState<Route[]>([]);
   const [startPoint, setStartPoint] = useState(null);
   const [endPoint, setEndPoint] = useState(null);
 
   useEffect(() => {
-    if (!_allRoutes.length) {
+    dispatch({ type: GET_ALL_ROUTES_R });
+    dispatch<any>(getAllRoutes());
+  }, []);
+
+  useEffect(() => {
+    if (!allRoutes.length) {
       dispatch({ type: GET_ALL_ROUTES_R });
       dispatch<any>(getAllRoutes());
     } else {
-      setAllRoutes((prevState) => prevState.concat(_allRoutes));
+      setFiltetedRoutes(allRoutes);
+      console.log("PIZDA");
     }
-  }, [_allRoutes]);
+    console.log(allRoutes);
+  }, [allRoutes]);
 
   const onFilterChangeHandler = (e: any) => {
     const { name, value } = e.target;
@@ -97,7 +104,7 @@ export const RoutesArchive = () => {
 
   const onImportHandler = async () => {
     const newData: Route[] = JSON.parse(await uploadFile());
-    setAllRoutes((prevState) => prevState.concat(newData));
+    // setAllRoutes((prevState) => prevState.concat(newData));
   };
 
   const onExportHandler = () => {
