@@ -6,6 +6,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.web.bind.annotation.*;
+import se.moevm.river_routes.osm.dto.RouteDataDTO;
 import se.moevm.river_routes.osm.dto.RouteRequest;
 import se.moevm.river_routes.osm.entity.PierNode;
 import se.moevm.river_routes.osm.entity.SightNode;
@@ -46,6 +47,12 @@ public class Controller {
     public ResponseEntity<?> getRoutes() {
         log.info("get-routes");
         return ResponseEntity.ok(parseService.getAllRoutes());
+    }
+
+    @PostMapping("/routes/add")
+    public ResponseEntity<?> addRoute(@RequestBody RouteDataDTO route) {
+        log.info("add-routes");
+        return ResponseEntity.ok(parseService.saveRoute(route));
     }
 
 }
