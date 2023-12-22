@@ -28,8 +28,6 @@ services:
     environment:
       - SPRING_DATASOURCE_USERNAME=neo4j
       - SPRING_DATASOURCE_PASSWORD=password
-      - SPRING_NEO4J_URI=bolt://db:7687
-
     command: "java -jar osm-pump.jar"
 
 volumes:
