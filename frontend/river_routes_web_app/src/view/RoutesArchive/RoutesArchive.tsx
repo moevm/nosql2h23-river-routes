@@ -64,7 +64,7 @@ export const RoutesArchive = () => {
     } else {
       setAllRoutes((prevState) => prevState.concat(_allRoutes));
     }
-  }, [debouncedIsLoadingRoutes]);
+  }, [_allRoutes]);
 
   const onFilterChangeHandler = (e: any) => {
     const { name, value } = e.target;

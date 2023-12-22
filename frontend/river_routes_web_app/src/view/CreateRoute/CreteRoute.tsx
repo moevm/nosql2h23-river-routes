@@ -4,13 +4,20 @@ import { Box, Button, CircularProgress, Container, makeStyles, Snackbar, TextFie
 import { Camera, CameraFlyTo, Entity, Polyline, PolylineCollection, Viewer } from "resium";
 import pierses from "@src/data/pierses.json";
 import sigths from "@src/data/sights.json";
-import { CREATE_ROUTE_R, GET_ALL_PIERSES_R, GET_ALL_SIGHTS_R, Pierse, Sight } from "@src/store/route/routeTypes";
+import {
+  CREATE_ROUTE_R,
+  GET_ALL_PIERSES_R,
+  GET_ALL_ROUTES_R,
+  GET_ALL_SIGHTS_R,
+  Pierse,
+  Sight,
+} from "@src/store/route/routeTypes";
 import { Cartesian3, Color, InterpolationAlgorithm } from "cesium";
 import * as Cesium from "cesium";
 import { MapPoint } from "@src/components/MapPoint/MapPoint";
 import { useDispatch, useSelector } from "react-redux";
 import MuiAlert, { AlertProps } from "@material-ui/lab/Alert";
-import { createRoute, getAllPierses, getAllSights } from "@src/store/route/routeActions";
+import { createRoute, getAllPierses, getAllRoutes, getAllSights } from "@src/store/route/routeActions";
 import { useDebounce } from "@src/utils/useDebounce";
 import { TextFields } from "@material-ui/icons";
 
@@ -66,7 +73,11 @@ export const CreateRoute = () => {
       dispatch({ type: GET_ALL_PIERSES_R });
       dispatch<any>(getAllSights());
     }
-  }, [allPierses, allSights]);
+    if (!allRoutes.length) {
+      dispatch({ type: GET_ALL_ROUTES_R });
+      dispatch<any>(getAllRoutes());
+    }
+  }, [allPierses, allSights, allRoutes]);
 
   const onSightClickHandle = (id: number) => {
     const ifAlreadyExisted = selectedSights.find((sight) => sight.id === id);
