@@ -33,7 +33,7 @@ export const getAllPierses = () => {
       type: GET_ALL_PIERSES,
       payload: [],
     };
-    fetch("//TODO")
+    fetch("http://localhost:8081/piers")
       .then((res) => res.json())
       .then((_result) => {
         result.payload = _result;
@@ -65,7 +65,8 @@ export const createRoute = (startPoint: Pierse, endPoint: Pierse, sights: Sight[
     type: CREATE_ROUTE,
     payload: null,
   };
-  fetch("https://example.com/profile", {
+  console.log(sights);
+  fetch("http://localhost:8081/path", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",

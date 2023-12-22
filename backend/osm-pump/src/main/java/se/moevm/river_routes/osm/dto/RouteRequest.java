@@ -16,5 +16,5 @@ import java.util.List;
 public class RouteRequest {
     private PierNode startPoint;
     private PierNode endPoint;
-    private List<SightNode> sight;
+    private List<SightNode> sights;
 }

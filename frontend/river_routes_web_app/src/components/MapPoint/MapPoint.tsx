@@ -11,7 +11,7 @@ export const MapPoint: React.FC<{
 }> = ({ data, onClickHandler, isSelected = false, isSight = false }) => {
   return (
     <Entity
-      name={isSight ? `Достопримечательность ${data.id}` : `Пирс ${data.id}`}
+      name={isSight ? `Достопримечательность ${data?.id}` : `Пирс ${data?.id}`}
       position={Cartesian3.fromDegrees(data.lon, data.lat, 10)}
       point={{
         pixelSize: isSelected ? 20 : 10,
