@@ -4,6 +4,8 @@ import jakarta.annotation.PostConstruct;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import se.moevm.river_routes.osm.dto.RouteDataDTO;
+import se.moevm.river_routes.osm.dto.RouteRequest;
 import se.moevm.river_routes.osm.entity.PierNode;
 import se.moevm.river_routes.osm.entity.SightNode;
 import se.moevm.river_routes.osm.entity.WaterNode;
@@ -11,6 +13,7 @@ import se.moevm.river_routes.osm.services.OSMPumpService;
 import se.moevm.river_routes.osm.services.ParseService;
 import se.moevm.river_routes.osm.services.RouteService;
 
+import java.time.OffsetDateTime;
 import java.util.*;
 
 @Service
@@ -27,11 +30,15 @@ public class RouteServiceImpl implements RouteService {
     }
 
     @Override
-    public List<WaterNode> findPathBetweenPiers(PierNode startPier, PierNode endPier) {
-        WaterNode start = parseService.getAllWater().stream().filter(waterNode -> waterNode.getPiers().contains(startPier)).findFirst().orElse(null);
-        WaterNode end = parseService.getAllWater().stream().filter(waterNode -> waterNode.getPiers().contains(endPier)).findFirst().orElse(null);
-
-        return null;
+    public RouteDataDTO findPath(RouteRequest request) {
+        return parseService.saveRoute(
+                RouteDataDTO.builder()
+                        .name(request.getName())
+                        .startPoint(request.getStartPoint())
+                        .endPoint(request.getEndPoint())
+                        .waterNodes(findPathBetweenPiersIncludeSights(request.getStartPoint(), request.getEndPoint(), request.getSights()))
+                        .createAt(new Date())
+                        .build());
     }
 
     @Override

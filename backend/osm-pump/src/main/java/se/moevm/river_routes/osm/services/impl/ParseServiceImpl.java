@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
 import se.moevm.river_routes.osm.dto.PierDataDTO;
+import se.moevm.river_routes.osm.dto.RouteDataDTO;
 import se.moevm.river_routes.osm.dto.SightDataDTO;
 import se.moevm.river_routes.osm.dto.WaterDataDTO;
 import se.moevm.river_routes.osm.entity.PierNode;
@@ -37,17 +38,33 @@ public class ParseServiceImpl implements ParseService {
     @Value("classpath:data/data/sights.json")
     Resource resourceSightFile;
 
+    @Value("classpath:data/data/routes.json")
+    Resource resourceRouteFile;
+
     private final ObjectMapper mapper = new ObjectMapper();
 
     private final List<WaterNode> waterNodes = new ArrayList<>();
     private final List<SightNode> sightNodes = new ArrayList<>();
     private final List<PierNode> pierNodes = new ArrayList<>();
+    private final List<RouteDataDTO> routes = new ArrayList<>();
 
     @PostConstruct
     void postConstruct() {
         getResourceSightData();
         getResourcePiercesData();
         linkWaterNodes(getResourceWaterData());
+        getResourceRouteData();
+    }
+
+    private void getResourceRouteData() {
+        try (InputStream inputStream = TypeReference.class.getResourceAsStream("/data/routes.json")) {
+            if (inputStream == null) {
+                throw new Exception("Resource not found");
+            }
+            routes.addAll(mapper.readValue(IOUtils.toString(inputStream, StandardCharsets.UTF_8), new TypeReference<>() {}));
+        } catch (Exception e) {
+            log.error("Cannot read data");
+        }
     }
 
     private void getResourceSightData() {
@@ -160,5 +177,27 @@ public class ParseServiceImpl implements ParseService {
     @Override
     public List<SightNode> getAllSights() {
         return sightNodes;
+    }
+
+    @Override
+    public List<RouteDataDTO> getAllRoutes() {
+        return routes;
+    }
+
+    @Override
+    public RouteDataDTO saveRoute(RouteDataDTO route) {
+        route.setId(routes.size() + 1L);
+        routes.add(route);
+        return route;
+    }
+
+    @Override
+    public Optional<RouteDataDTO> findRouteById(Long id) {
+        for (RouteDataDTO route : routes) {
+            if (route.getId().equals(id)) {
+                return Optional.of(route);
+            }
+        }
+        return Optional.empty();
     }
 }
