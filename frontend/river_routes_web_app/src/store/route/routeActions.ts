@@ -33,7 +33,8 @@ export const getAllPierses = () => {
       type: GET_ALL_PIERSES,
       payload: [],
     };
-    fetch("http://localhost:8081/pierses")
+    fetch("http://localhost:8081/piers")
+
       .then((res) => res.json())
       .then((_result) => {
         result.payload = _result;
@@ -58,7 +59,7 @@ export const getAllRoutes = () => {
       })
       .catch((e) => console.log(e));
   };
-};
+
 
 export const createRoute =
   (startPoint: Pierse, endPoint: Pierse, sights: Sight[], title: string) => (dispatch: any) => {

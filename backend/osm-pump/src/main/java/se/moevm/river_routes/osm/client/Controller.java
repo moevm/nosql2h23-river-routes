@@ -6,6 +6,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.web.bind.annotation.*;
+import se.moevm.river_routes.osm.dto.RouteDataDTO;
 import se.moevm.river_routes.osm.dto.RouteRequest;
 import se.moevm.river_routes.osm.entity.PierNode;
 import se.moevm.river_routes.osm.entity.SightNode;
@@ -24,19 +25,6 @@ public class Controller {
     private final RouteService routeService;
     private final ParseService parseService;
 
-    @SneakyThrows
-    @Scheduled(initialDelay = 1000, fixedDelay = Integer.MAX_VALUE)
-    void schedule() {
-//        List<WaterNode> path = routeService.findPathBetweenPiersIncludeSights(
-//                parseService.getAllPierces().get(2),
-//                parseService.getAllPierces().get(3),
-//                parseService.getAllSights().stream().filter(s ->
-//                        s.getTitle().equals("Михайловский замок")
-//                                || s.getTitle().equals("Церковь Успения Пресвятой Богородицы")
-//                                || s.getTitle().equals("Ледокол Красин")).collect(Collectors.toList()));
-//        path.forEach(p -> System.out.println(p.getId()));
-    }
-
     @GetMapping("/piers")
     public ResponseEntity<?> getPierces() {
         log.info("get-pierces");
@@ -51,9 +39,20 @@ public class Controller {
 
     @PostMapping("/path")
     public ResponseEntity<?> getPath(@RequestBody RouteRequest request) {
-        log.info("get-path");
-        return ResponseEntity.ok(routeService.findPathBetweenPiersIncludeSights(
-                request.getStartPoint(), request.getEndPoint(), request.getSight()));
+        log.info("get-path: {} {} {}", request.getStartPoint(), request.getEndPoint(), request.getSights());
+        return ResponseEntity.ok(routeService.findPath(request));
+    }
+
+    @GetMapping("/routes")
+    public ResponseEntity<?> getRoutes() {
+        log.info("get-routes");
+        return ResponseEntity.ok(parseService.getAllRoutes());
+    }
+
+    @PostMapping("/routes/add")
+    public ResponseEntity<?> addRoute(@RequestBody RouteDataDTO route) {
+        log.info("add-routes");
+        return ResponseEntity.ok(parseService.saveRoute(route));
     }
 
 }
