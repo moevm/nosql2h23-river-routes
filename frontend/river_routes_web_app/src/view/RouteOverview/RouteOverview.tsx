@@ -90,14 +90,14 @@ export const RouteOverview = () => {
                 once={true}
               />
               <PolylineCollection>
-                {/*<Polyline*/}
-                {/*  positions={[*/}
-                {/*    Cartesian3.fromDegrees(currentRoute.startPoint.lon, currentRoute.startPoint.lat, 2),*/}
-                {/*    Cartesian3.fromDegrees(currentRoute.waterNodes[0].lon, currentRoute.waterNodes[0].lat, 2),*/}
-                {/*    Cartesian3.fromDegrees(currentRoute.waterNodes[0].lon, currentRoute.waterNodes[0].lat, 2),*/}
-                {/*  ]}*/}
-                {/*  width={5}*/}
-                {/*/>*/}
+                <Polyline
+                  positions={[
+                    Cartesian3.fromDegrees(currentRoute.startPoint.lon, currentRoute.startPoint.lat, 2),
+                    Cartesian3.fromDegrees(currentRoute.waterNodes[0].lon, currentRoute.waterNodes[0].lat, 2),
+                    Cartesian3.fromDegrees(currentRoute.waterNodes[0].lon, currentRoute.waterNodes[0].lat, 2),
+                  ]}
+                  width={5}
+                />
                 {currentRoute.waterNodes.map(
                   (elem: WaterNode, num) =>
                     num !== currentRoute.waterNodes.length - 1 && (
@@ -119,18 +119,18 @@ export const RouteOverview = () => {
                       />
                     ),
                 )}
-                {/*<Polyline*/}
-                {/*  positions={[*/}
-                {/*    Cartesian3.fromDegrees(*/}
-                {/*      currentRoute.waterNodes[currentRoute.waterNodes.length - 1].lon,*/}
-                {/*      currentRoute.waterNodes[currentRoute.waterNodes.length - 1].lat,*/}
-                {/*      2,*/}
-                {/*    ),*/}
-                {/*    Cartesian3.fromDegrees(currentRoute.endPoint.lon, currentRoute.endPoint.lat, 2),*/}
-                {/*    Cartesian3.fromDegrees(currentRoute.endPoint.lon, currentRoute.endPoint.lat, 2),*/}
-                {/*  ]}*/}
-                {/*  width={5}*/}
-                {/*/>*/}
+                <Polyline
+                  positions={[
+                    Cartesian3.fromDegrees(
+                      currentRoute.waterNodes[currentRoute.waterNodes.length - 1].lon,
+                      currentRoute.waterNodes[currentRoute.waterNodes.length - 1].lat,
+                      2,
+                    ),
+                    Cartesian3.fromDegrees(currentRoute.endPoint.lon, currentRoute.endPoint.lat, 2),
+                    Cartesian3.fromDegrees(currentRoute.endPoint.lon, currentRoute.endPoint.lat, 2),
+                  ]}
+                  width={5}
+                />
               </PolylineCollection>
               {currentRoute.sights.map((elem) => (
                 <MapPoint data={elem} onClickHandler={null} isSelected={false} isSight={true} />

@@ -75,7 +75,7 @@ export const RoutesArchive = () => {
 
   const onFilterChangeHandler = (e: any) => {
     const { name, value } = e.target;
-    const newValue = name === "date" ? value.split("-").reverse().toString().replace(/,/g, ".") : value;
+    const newValue = name === "date" ? value.split("-").toString().replace(/,/g, ".") : value;
 
     setForm((prevState) => ({ ...prevState, [name]: newValue }));
   };
@@ -89,7 +89,9 @@ export const RoutesArchive = () => {
         allRoutes.filter(
           (elem) =>
             elem.name.includes(debouncedFilterValue.routeName) &&
-            (debouncedFilterValue.date !== "" ? elem.createAt.toString() == debouncedFilterValue.date : true) &&
+            (debouncedFilterValue.date !== ""
+              ? elem.createAt.toString().split("T")[0].replace(/-/g, ".") == debouncedFilterValue.date
+              : true) &&
             (startCoordinates
               ? elem.startPoint.lat === startCoordinates.startPoint.lat &&
                 elem.startPoint.lon === startCoordinates.startPoint.lon
