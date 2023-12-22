@@ -4,7 +4,7 @@ import { Box, Button, CircularProgress, Container, makeStyles, Snackbar } from "
 import { Camera, CameraFlyTo, Entity, Polyline, PolylineCollection, Viewer } from "resium";
 import pierses from "@src/data/pierses.json";
 import sigths from "@src/data/sights.json";
-import { GET_ALL_PIERSES_R, GET_ALL_SIGHTS_R, Pierse, Sight } from "@src/store/route/routeTypes";
+import { CREATE_ROUTE_R, GET_ALL_PIERSES_R, GET_ALL_SIGHTS_R, Pierse, Sight } from "@src/store/route/routeTypes";
 import { Cartesian3, Color, InterpolationAlgorithm } from "cesium";
 import * as Cesium from "cesium";
 import { MapPoint } from "@src/components/MapPoint/MapPoint";
@@ -37,11 +37,23 @@ export const CreateRoute = () => {
   const allSights: Sight[] = useSelector((state: any) => state.route.allSights);
   const allPierses: Pierse[] = useSelector((state: any) => state.route.allPierses);
 
-  const isLoadingPierses = useSelector((state: any) => state.route.isLoadingPierses);
-  const isLoadingSights = useSelector((state: any) => state.route.isLoadingSights);
+  // const isLoadingPierses = useSelector((state: any) => state.route.isLoadingPierses);
+  // const isLoadingSights = useSelector((state: any) => state.route.isLoadingSights);
+  //
+  // const debouncedIsLoadingPierses = useDebounce(isLoadingPierses, 300);
+  // const debouncedIsLoadingSights = useDebounce(isLoadingSights, 300);
 
-  const debouncedIsLoadingPierses = useDebounce(isLoadingPierses, 300);
-  const debouncedIsLoadingSights = useDebounce(isLoadingSights, 300);
+  const isLoading = useSelector((state: any) => state.route.isLoading);
+  const debounsedIsLoading = useDebounce(isLoading, 300);
+  const allRoutes: Pierse[] = useSelector((state: any) => state.route.allRoutes);
+
+  useEffect(() => {
+    if (selectedSights.length && startPoint && endPoint) {
+      if (!debounsedIsLoading && allRoutes.length) {
+        window.location.href = `/routes/${allRoutes[allRoutes.length - 1].id}`;
+      }
+    }
+  }, [debounsedIsLoading]);
 
   useEffect(() => {
     if (!allPierses.length) {
@@ -63,6 +75,7 @@ export const CreateRoute = () => {
 
   const onClickCreateRouteHandler = () => {
     if (selectedSights.length && startPoint && endPoint) {
+      dispatch({ type: CREATE_ROUTE_R });
       dispatch<any>(createRoute(startPoint, endPoint, selectedSights));
     } else {
       setOpen(true);
@@ -192,7 +205,7 @@ export const CreateRoute = () => {
           </Viewer>
           <Box paddingTop={"1em"}>
             <Button variant={"outlined"} onClick={onClickCreateRouteHandler}>
-              Построить маршрут
+              {debounsedIsLoading ? <CircularProgress /> : "Построить маршрут"}
             </Button>
           </Box>
           <Snackbar open={open} autoHideDuration={6000} onClose={() => setOpen(false)}>
