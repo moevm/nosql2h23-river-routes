@@ -12,6 +12,8 @@ export const GET_ALL_PIERSES_R = "GET_ALL_PIERSES_R";
 
 export const CREATE_ROUTE_R = "CREATE_ROUTE_R";
 
+export const GET_ALL_ROUTES_R = "GET_ALL_ROUTES_R";
+
 export interface Sight {
   id: number;
   title: string;
@@ -30,13 +32,22 @@ export interface WaterNode {
 export interface Route {
   id: number;
   name: string;
-  startLat: number;
-  startLon: number;
-  endLat: number;
-  endLon: number;
+  // startLat: number;
+  // startLon: number;
+  // endLat: number;
+  // endLon: number;
+  startPoint: Pierse;
+  endPoint: Pierse;
   createAt: Date;
   sights: Sight[];
   waterNodes: WaterNode[];
+}
+
+export interface RouteForRequest {
+  name: string;
+  startPoint: Pierse;
+  endPoint: Pierse;
+  sights: Sight[];
 }
 
 export interface Pierse {
@@ -52,7 +63,9 @@ export interface DefaultState {
   allRoutes: Route[];
   isLoadingPierses: boolean;
   isLoadingSights: boolean;
+  isLoadingRoutes: boolean;
   isLoading: boolean;
+  newId: number;
 }
 
 export interface GetAllSights {
@@ -72,7 +85,7 @@ export interface GetAllRoutes {
 
 export interface CreateRoute {
   type: typeof CREATE_ROUTE;
-  payload: Route[];
+  payload: number;
 }
 
 export type routeTypes = GetAllSights | DefaultState | GetAllPierses | CreateRoute;

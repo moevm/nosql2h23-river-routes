@@ -2,10 +2,10 @@ import {
   CREATE_ROUTE,
   CreateRoute,
   GET_ALL_PIERSES,
-  GET_ALL_PIERSES_R,
+  GET_ALL_ROUTES,
   GET_ALL_SIGHTS,
-  GET_ALL_SIGHTS_R,
   GetAllPierses,
+  GetAllRoutes,
   GetAllSights,
   Pierse,
   Sight,
@@ -33,7 +33,7 @@ export const getAllPierses = () => {
       type: GET_ALL_PIERSES,
       payload: [],
     };
-    fetch("//TODO")
+    fetch("http://localhost:8081/pierses")
       .then((res) => res.json())
       .then((_result) => {
         result.payload = _result;
@@ -43,44 +43,46 @@ export const getAllPierses = () => {
   };
 };
 
-// export const getAllRoutes = () => {
-//   return async (dispatch: any) => {
-//     const result: GetAllRoutes = {
-//       type: GET_ALL_ROUTES,
-//       payload: [],
-//     };
-//     const response = await fetch("//TODO")
-//       .then((res) => res.json())
-//       .then((_result) => {
-//         result.payload = _result;
-//       })
-//       .catch((e) => console.log(e));
-//
-//     return dispatch(result);
-//   };
-// };
-
-export const createRoute = (startPoint: Pierse, endPoint: Pierse, sights: Sight[]) => (dispatch: any) => {
-  const result: CreateRoute = {
-    type: CREATE_ROUTE,
-    payload: null,
+export const getAllRoutes = () => {
+  return (dispatch: any) => {
+    const result: GetAllRoutes = {
+      type: GET_ALL_ROUTES,
+      payload: [],
+    };
+    fetch("http://localhost:8081/routes")
+      .then((res) => res.json())
+      .then((_result) => {
+        result.payload = _result;
+        console.log(_result);
+        return dispatch(result);
+      })
+      .catch((e) => console.log(e));
   };
-  fetch("https://example.com/profile", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({
-      startPoint: startPoint,
-      endPoint: endPoint,
-      sights: sights,
-    }),
-  })
-    .then((res) => res.json())
-    .then((_result) => {
-      result.payload = _result;
-    })
-    .catch((e) => console.log(e));
-
-  return dispatch(result);
 };
+
+export const createRoute =
+  (startPoint: Pierse, endPoint: Pierse, sights: Sight[], title: string) => (dispatch: any) => {
+    const result: CreateRoute = {
+      type: CREATE_ROUTE,
+      payload: null,
+    };
+    fetch("http://localhost:8081/path", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        startPoint: startPoint,
+        endPoint: endPoint,
+        sights: sights,
+        name: title,
+      }),
+    })
+      .then((res) => res.json())
+      .then((_result) => {
+        console.log(_result);
+        result.payload = _result.id;
+        return dispatch(result);
+      })
+      .catch((e) => console.log(e));
+  };

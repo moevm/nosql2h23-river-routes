@@ -15,7 +15,7 @@ export const RouteOverview = () => {
   const id = useParams();
 
   const _allRoutes: Route[] = useSelector((state: any) => state.route.allRoutes);
-  const [allRoutes, setAllRoutes] = useState<Route[]>(JSON.parse(JSON.stringify(routes)));
+  const [allRoutes, setAllRoutes] = useState<Route[]>([]);
   const currentRoute = allRoutes.find((elem) => elem.id === parseInt(id.id));
   useEffect(() => {
     if (_allRoutes.length) {
@@ -31,7 +31,7 @@ export const RouteOverview = () => {
           <Box display={"flex"} flexDirection={"column"} justifyContent={"space-evenly"}>
             <div>
               <LocationOnOutlinedIcon style={{ marginRight: "0.7em" }} />
-              Начало маршрута: {currentRoute.startLon}, {currentRoute.startLat}
+              Начало маршрута: {currentRoute.startPoint.lat}, {currentRoute.startPoint.lon}
             </div>
             {currentRoute.sights.map((elem, num) => (
               <div
@@ -58,7 +58,7 @@ export const RouteOverview = () => {
             ))}
             <div>
               <LocationOnOutlinedIcon style={{ marginRight: "0.7em" }} />
-              Конец маршрута: {currentRoute.endLon}, {currentRoute.endLat}
+              Конец маршрута: {currentRoute.endPoint.lat}, {currentRoute.endPoint.lon}
             </div>
           </Box>
           <Viewer
@@ -108,8 +108,8 @@ export const RouteOverview = () => {
             <MapPoint
               data={{
                 id: currentRoute.id,
-                lat: currentRoute.startLat,
-                lon: currentRoute.startLon,
+                lat: currentRoute.startPoint.lat,
+                lon: currentRoute.startPoint.lon,
                 waterNodes: [],
                 wikiLink: "",
               }}
@@ -120,8 +120,8 @@ export const RouteOverview = () => {
             <MapPoint
               data={{
                 id: currentRoute.id,
-                lat: currentRoute.endLat,
-                lon: currentRoute.endLon,
+                lat: currentRoute.endPoint.lat,
+                lon: currentRoute.endPoint.lon,
                 waterNodes: [],
                 wikiLink: "",
               }}
