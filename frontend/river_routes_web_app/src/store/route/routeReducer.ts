@@ -1,5 +1,6 @@
 import {
   CREATE_ROUTE,
+  CREATE_ROUTE_R,
   DefaultState,
   GET_ALL_PIERSES,
   GET_ALL_PIERSES_R,
@@ -16,6 +17,7 @@ const defaultState: DefaultState = {
   allRoutes: [],
   isLoadingPierses: false,
   isLoadingSights: false,
+  isLoading: false,
 };
 
 export const routeReducer = (state = defaultState, action: any) => {
@@ -27,11 +29,13 @@ export const routeReducer = (state = defaultState, action: any) => {
     case GET_ALL_PIERSES:
       return { ...state, allPierses: action.payload, isLoadingPierses: false };
     case CREATE_ROUTE:
-      return { ...state, allSights: [...state.allRoutes, action.payload] };
+      return { ...state, allRoutes: [...state.allRoutes, action.payload], isLoading: false };
     case GET_ALL_PIERSES_R:
       return { ...state, isLoadingPierses: true };
     case GET_ALL_SIGHTS_R:
       return { ...state, isLoadingSights: true };
+    case CREATE_ROUTE_R:
+      return { ...state, isLoading: true };
     default:
       return state;
   }

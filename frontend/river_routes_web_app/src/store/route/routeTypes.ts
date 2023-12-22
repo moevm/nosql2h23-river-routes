@@ -10,6 +10,8 @@ export const GET_ALL_SIGHTS_R = "GET_ALL_SIGHTS_R";
 
 export const GET_ALL_PIERSES_R = "GET_ALL_PIERSES_R";
 
+export const CREATE_ROUTE_R = "CREATE_ROUTE_R";
+
 export interface Sight {
   id: number;
   title: string;
@@ -50,6 +52,7 @@ export interface DefaultState {
   allRoutes: Route[];
   isLoadingPierses: boolean;
   isLoadingSights: boolean;
+  isLoading: boolean;
 }
 
 export interface GetAllSights {
