@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Page } from "@src/components/Page/Page";
-import { Box, Button, CircularProgress, Container, makeStyles, Snackbar } from "@material-ui/core";
+import { Box, Button, CircularProgress, Container, makeStyles, Snackbar, TextField } from "@material-ui/core";
 import { Camera, CameraFlyTo, Entity, Polyline, PolylineCollection, Viewer } from "resium";
 import pierses from "@src/data/pierses.json";
 import sigths from "@src/data/sights.json";
@@ -12,6 +12,7 @@ import { useDispatch, useSelector } from "react-redux";
 import MuiAlert, { AlertProps } from "@material-ui/lab/Alert";
 import { createRoute, getAllPierses, getAllSights } from "@src/store/route/routeActions";
 import { useDebounce } from "@src/utils/useDebounce";
+import { TextFields } from "@material-ui/icons";
 
 const useStyles = makeStyles((theme) => ({
   mainContainer: {
@@ -32,6 +33,7 @@ export const CreateRoute = () => {
   const [selectedSights, setSelectedSights] = useState<Sight[]>([]);
   const [startPoint, setStartPoint] = useState<Pierse>(null);
   const [endPoint, setEndPoint] = useState<Pierse>(null);
+  const [title, setTitle] = useState("");
   const [open, setOpen] = useState(false);
 
   const allSights: Sight[] = useSelector((state: any) => state.route.allSights);
@@ -76,7 +78,7 @@ export const CreateRoute = () => {
   const onClickCreateRouteHandler = () => {
     if (selectedSights.length && startPoint && endPoint) {
       dispatch({ type: CREATE_ROUTE_R });
-      dispatch<any>(createRoute(startPoint, endPoint, selectedSights));
+      dispatch<any>(createRoute(startPoint, endPoint, selectedSights, title));
     } else {
       setOpen(true);
     }
@@ -203,6 +205,10 @@ export const CreateRoute = () => {
               />
             ))}
           </Viewer>
+          <Box>
+            <h3>3. Придумайте название маршрута</h3>
+            <TextField placeholder={"Введите название маршрута"} onChange={(e) => setTitle(e.target.value)} />
+          </Box>
           <Box paddingTop={"1em"}>
             <Button variant={"outlined"} onClick={onClickCreateRouteHandler}>
               {debounsedIsLoading ? <CircularProgress /> : "Построить маршрут"}

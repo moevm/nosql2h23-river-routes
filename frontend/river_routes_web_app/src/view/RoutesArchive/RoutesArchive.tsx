@@ -16,12 +16,13 @@ import {
   TableRow,
   TextField,
 } from "@material-ui/core";
-import { Route } from "@src/store/route/routeTypes";
+import { GET_ALL_ROUTES_R, Route } from "@src/store/route/routeTypes";
 import routes from "@src/data/routes.json";
 import { useDebounce } from "@src/utils/useDebounce";
 import { exportFile, uploadFile } from "@src/utils/toolFunctions";
 import { Page } from "@src/components/Page/Page";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { getAllRoutes } from "@src/store/route/routeActions";
 
 const useStyles = makeStyles((theme) => ({
   tableCell: {
@@ -44,20 +45,24 @@ const defaultState = (): FormState => ({
 
 export const RoutesArchive = () => {
   const _allRoutes: Route[] = useSelector((state: any) => state.route.allRoutes);
-  const [allRoutes, setAllRoutes] = useState<Route[]>(JSON.parse(JSON.stringify(routes)));
+  const [allRoutes, setAllRoutes] = useState<Route[]>([]);
   const classes = useStyles();
   const [form, setForm] = useState(defaultState());
   const debouncedFilterValue = useDebounce(form, 200);
-
+  const isLoadingRoutes = useSelector((state: any) => state.route.isLoadingRoutes);
+  const dispatch = useDispatch();
   const [filteredRoutes, setFiltetedRoutes] = useState<Route[]>(allRoutes);
   const [startPoint, setStartPoint] = useState(null);
   const [endPoint, setEndPoint] = useState(null);
 
   useEffect(() => {
-    if (_allRoutes.length) {
+    if (!_allRoutes.length) {
+      dispatch({ type: GET_ALL_ROUTES_R });
+      dispatch<any>(getAllRoutes());
+    } else {
       setAllRoutes((prevState) => prevState.concat(_allRoutes));
     }
-  }, [_allRoutes]);
+  }, [allRoutes]);
 
   const onFilterChangeHandler = (e: any) => {
     const { name, value } = e.target;
@@ -77,9 +82,12 @@ export const RoutesArchive = () => {
             elem.name.includes(debouncedFilterValue.routeName) &&
             (debouncedFilterValue.date !== "" ? elem.createAt.toString() == debouncedFilterValue.date : true) &&
             (startCoordinates
-              ? elem.startLat === startCoordinates.startLat && elem.startLon === startCoordinates.startLon
+              ? elem.startPoint.lat === startCoordinates.startPoint.lat &&
+                elem.startPoint.lon === startCoordinates.startPoint.lon
               : true) &&
-            (endCoordinates ? elem.endLat === endCoordinates.endLat && elem.endLon === endCoordinates.endLon : true),
+            (endCoordinates
+              ? elem.endPoint.lat === endCoordinates.endPoint.lat && elem.endPoint.lon === endCoordinates.endPoint.lon
+              : true),
         ),
       );
     }
@@ -130,9 +138,9 @@ export const RoutesArchive = () => {
                       }}
                     >
                       <MenuItem value={null}>Все</MenuItem>
-                      {allRoutes.map((pierse, num) => (
-                        <MenuItem value={pierse.id} key={num}>
-                          {pierse.startLat},{pierse.startLon}
+                      {allRoutes.map((route, num) => (
+                        <MenuItem value={route.id} key={num}>
+                          {route.startPoint.lat},{route.startPoint.lon}
                         </MenuItem>
                       ))}
                     </Select>
@@ -150,9 +158,9 @@ export const RoutesArchive = () => {
                       }}
                     >
                       <MenuItem value={null}>Все</MenuItem>
-                      {allRoutes.map((pierse, num) => (
-                        <MenuItem value={pierse.id} key={num}>
-                          {pierse.endLat},{pierse.endLon}
+                      {allRoutes.map((route, num) => (
+                        <MenuItem value={route.id} key={num}>
+                          {route.endPoint.lat},{route.endPoint.lon}
                         </MenuItem>
                       ))}
                     </Select>
@@ -195,10 +203,10 @@ export const RoutesArchive = () => {
                   <TableRow key={number} onClick={() => (window.location.href = `/routes/${route.id}`)}>
                     <TableCell className={classes.tableCell}>{route.name}</TableCell>
                     <TableCell className={classes.tableCell}>
-                      {route.startLat} {route.startLon}
+                      {route.startPoint.lat} {route.startPoint.lon}
                     </TableCell>
                     <TableCell className={classes.tableCell}>
-                      {route.endLat} {route.endLon}
+                      {route.endPoint.lat} {route.endPoint.lon}
                     </TableCell>
                     <TableCell className={classes.tableCell}>{route.createAt.toString()}</TableCell>
                   </TableRow>
