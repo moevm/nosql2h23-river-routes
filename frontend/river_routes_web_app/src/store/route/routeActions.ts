@@ -53,7 +53,7 @@ export const getAllRoutes = () => {
       .then((res) => res.json())
       .then((_result) => {
         result.payload = _result;
-        console.log(_result);
+        // console.log(_result);
         return dispatch(result);
       })
       .catch((e) => console.log(e));
@@ -80,8 +80,8 @@ export const createRoute =
     })
       .then((res) => res.json())
       .then((_result) => {
-        console.log(_result);
-        result.payload = _result.id;
+        // console.log(_result);
+        result.payload = _result;
         return dispatch(result);
       })
       .catch((e) => console.log(e));

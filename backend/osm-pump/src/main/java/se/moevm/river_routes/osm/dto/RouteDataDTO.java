@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 import se.moevm.river_routes.osm.entity.PierNode;
+import se.moevm.river_routes.osm.entity.SightNode;
 import se.moevm.river_routes.osm.entity.WaterNode;
 
 import java.util.Date;
@@ -21,6 +22,7 @@ public class RouteDataDTO {
     private String name;
     private PierNode startPoint;
     private PierNode endPoint;
+    private List<SightNode> sights;
     private List<WaterNode> waterNodes;
     private Date createAt;
 }

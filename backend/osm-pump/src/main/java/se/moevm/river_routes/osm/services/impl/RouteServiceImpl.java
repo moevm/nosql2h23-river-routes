@@ -36,6 +36,7 @@ public class RouteServiceImpl implements RouteService {
                         .name(request.getName())
                         .startPoint(request.getStartPoint())
                         .endPoint(request.getEndPoint())
+                        .sights(request.getSights())
                         .waterNodes(findPathBetweenPiersIncludeSights(request.getStartPoint(), request.getEndPoint(), request.getSights()))
                         .createAt(new Date())
                         .build());

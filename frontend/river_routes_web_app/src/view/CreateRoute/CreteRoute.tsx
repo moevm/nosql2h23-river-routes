@@ -73,11 +73,11 @@ export const CreateRoute = () => {
       dispatch({ type: GET_ALL_PIERSES_R });
       dispatch<any>(getAllSights());
     }
-    if (!allRoutes.length) {
-      dispatch({ type: GET_ALL_ROUTES_R });
-      dispatch<any>(getAllRoutes());
-    }
-  }, [allPierses, allSights, allRoutes]);
+    // if (!allRoutes.length) {
+    //   dispatch({ type: GET_ALL_ROUTES_R });
+    //   dispatch<any>(getAllRoutes());
+    // }
+  }, [allPierses, allSights]);
 
   const onSightClickHandle = (id: number) => {
     const ifAlreadyExisted = selectedSights.find((sight) => sight.id === id);
