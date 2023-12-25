@@ -4,9 +4,6 @@ services:
   db:
     image: neo4j:4.3.6
     restart: always
-    ports:
-      - "7474:7474"
-      - "7687:7687"
     volumes:
       - data:/data
     environment:
@@ -16,7 +13,7 @@ services:
     build: ./frontend/river_routes_web_app
     restart: always
     ports:
-      - "8080:8080"
+      - "127.0.0.1:8080:8080"
 
   backend:
     build:
@@ -24,7 +21,7 @@ services:
       dockerfile: osm-pump.dockerfile
     restart: always
     ports:
-      - "8081:8081"
+      - "127.0.0.1:8081:8081"
     environment:
       - SPRING_DATASOURCE_USERNAME=neo4j
       - SPRING_DATASOURCE_PASSWORD=password
