@@ -28,19 +28,27 @@ public class RouteServiceImpl implements RouteService {
     public void init() {
         pumpService.pumpAllData();
 
-        System.out.println("save");
-        PierNode start = parseService.getAllPierces().stream().filter(p -> p.getId() == 5).findFirst().get();
-        PierNode end = parseService.getAllPierces().stream().filter(p -> p.getId() == 11).findFirst().get();
-        SightNode sight1 = parseService.getAllSights().stream().filter(s -> s.getId() == 8).findFirst().get();
-        SightNode sight2 = parseService.getAllSights().stream().filter(s -> s.getId() == 10).findFirst().get();
-        findPath(new RouteRequest("По Неве", start, end, List.of(sight1, sight2)));
-
-        start = parseService.getAllPierces().stream().filter(p -> p.getId() == 2).findFirst().get();
-        end = parseService.getAllPierces().stream().filter(p -> p.getId() == 8).findFirst().get();
-        sight1 = parseService.getAllSights().stream().filter(s -> s.getId() == 7).findFirst().get();
-        sight2 = parseService.getAllSights().stream().filter(s -> s.getId() == 8).findFirst().get();
+        PierNode start = parseService.getAllPierces().stream().filter(p -> p.getId() == 2).findFirst().get();
+        PierNode end = parseService.getAllPierces().stream().filter(p -> p.getId() == 8).findFirst().get();
+        SightNode sight1 = parseService.getAllSights().stream().filter(s -> s.getId() == 7).findFirst().get();
+        SightNode sight2 = parseService.getAllSights().stream().filter(s -> s.getId() == 8).findFirst().get();
         SightNode sight3 = parseService.getAllSights().stream().filter(s -> s.getId() == 9).findFirst().get();
-        findPath(new RouteRequest("Проспект Невы", start, end, List.of(sight1, sight2, sight3)));
+
+        WaterNode node1 = parseService.getAllWater().stream().filter(w -> w.getId() == 5).findFirst().get();
+        WaterNode node2 = parseService.getAllWater().stream().filter(w -> w.getId() == 6).findFirst().get();
+        WaterNode node3 = parseService.getAllWater().stream().filter(w -> w.getId() == 7).findFirst().get();
+        WaterNode node4 = parseService.getAllWater().stream().filter(w -> w.getId() == 8).findFirst().get();
+        WaterNode node5 = parseService.getAllWater().stream().filter(w -> w.getId() == 9).findFirst().get();
+        WaterNode node6 = parseService.getAllWater().stream().filter(w -> w.getId() == 10).findFirst().get();
+        parseService.saveRoute(
+                RouteDataDTO.builder()
+                        .name("По Неве")
+                        .startPoint(start)
+                        .endPoint(end)
+                        .sights(List.of(sight1, sight2, sight3))
+                        .waterNodes(List.of(node1, node2, node3, node4, node5, node6))
+                        .createAt(new Date())
+                        .build());
     }
 
     @Override
