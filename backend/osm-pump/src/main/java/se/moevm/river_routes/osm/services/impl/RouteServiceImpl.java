@@ -41,6 +41,8 @@ public class RouteServiceImpl implements RouteService {
         WaterNode node4 = parseService.getAllWater().stream().filter(w -> w.getId() == 8).findFirst().get();
         WaterNode node5 = parseService.getAllWater().stream().filter(w -> w.getId() == 9).findFirst().get();
         WaterNode node6 = parseService.getAllWater().stream().filter(w -> w.getId() == 10).findFirst().get();
+
+        System.out.println("here");
         parseService.saveRoute(
                 RouteDataDTO.builder()
                         .name("По Неве")
