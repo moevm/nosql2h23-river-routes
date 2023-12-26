@@ -48,7 +48,6 @@ public class OSMPumpServiceImpl implements OSMPumpService {
 
             List<WaterNode> waterNodes =  parseService.getAllWater();
             log.info("found {} water nodes", waterNodes.size());
-            waterNodes.forEach(waterNode -> System.out.println(waterNode.toString()));
 
             List<PierNode> pierNodes = parseService.getAllPierces();
             log.info("found {} pier nodes", pierNodes.size());
@@ -120,7 +119,6 @@ public class OSMPumpServiceImpl implements OSMPumpService {
                         .title(x.getTags().getName())
                         .lat(x.getLat())
                         .lon(x.getLon())
-                        .website(x.getTags().getWebsite())
                         .updatedAt(OffsetDateTime.now())
                         .build()
                 )

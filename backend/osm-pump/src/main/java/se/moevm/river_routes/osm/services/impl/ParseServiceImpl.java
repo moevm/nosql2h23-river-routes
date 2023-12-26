@@ -53,7 +53,7 @@ public class ParseServiceImpl implements ParseService {
         getResourceSightData();
         getResourcePiercesData();
         linkWaterNodes(getResourceWaterData());
-        getResourceRouteData();
+        // getResourceRouteData();
     }
 
     private void getResourceRouteData() {
@@ -62,8 +62,9 @@ public class ParseServiceImpl implements ParseService {
                 throw new Exception("Resource not found");
             }
             routes.addAll(mapper.readValue(IOUtils.toString(inputStream, StandardCharsets.UTF_8), new TypeReference<>() {}));
+            System.out.println(routes);
         } catch (Exception e) {
-            log.error("Cannot read data");
+            log.error("Cannot read data: {}", e.getMessage());
         }
     }
 

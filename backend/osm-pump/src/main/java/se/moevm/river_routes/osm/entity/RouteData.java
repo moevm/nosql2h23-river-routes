@@ -1,8 +1,7 @@
 package se.moevm.river_routes.osm.entity;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
+import org.neo4j.driver.util.Immutable;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.neo4j.core.schema.GeneratedValue;
 import org.springframework.data.neo4j.core.schema.Id;
@@ -14,9 +13,11 @@ import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+@AllArgsConstructor
 @Getter
 @Setter
-@AllArgsConstructor
+@Builder
+@ToString
 @Node("Route")
 public class RouteData {
 

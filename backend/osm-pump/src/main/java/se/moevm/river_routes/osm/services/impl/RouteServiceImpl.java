@@ -27,6 +27,20 @@ public class RouteServiceImpl implements RouteService {
     @PostConstruct
     public void init() {
         pumpService.pumpAllData();
+
+        System.out.println("save");
+        PierNode start = parseService.getAllPierces().stream().filter(p -> p.getId() == 5).findFirst().get();
+        PierNode end = parseService.getAllPierces().stream().filter(p -> p.getId() == 11).findFirst().get();
+        SightNode sight1 = parseService.getAllSights().stream().filter(s -> s.getId() == 8).findFirst().get();
+        SightNode sight2 = parseService.getAllSights().stream().filter(s -> s.getId() == 10).findFirst().get();
+        findPath(new RouteRequest("По Неве", start, end, List.of(sight1, sight2)));
+
+        start = parseService.getAllPierces().stream().filter(p -> p.getId() == 2).findFirst().get();
+        end = parseService.getAllPierces().stream().filter(p -> p.getId() == 8).findFirst().get();
+        sight1 = parseService.getAllSights().stream().filter(s -> s.getId() == 7).findFirst().get();
+        sight2 = parseService.getAllSights().stream().filter(s -> s.getId() == 8).findFirst().get();
+        SightNode sight3 = parseService.getAllSights().stream().filter(s -> s.getId() == 9).findFirst().get();
+        findPath(new RouteRequest("Проспект Невы", start, end, List.of(sight1, sight2, sight3)));
     }
 
     @Override

@@ -45,7 +45,7 @@ public class Controller {
 
     @GetMapping("/routes")
     public ResponseEntity<?> getRoutes() {
-        log.info("get-routes");
+        log.info("get-routes: {}", parseService.getAllRoutes().size());
         return ResponseEntity.ok(parseService.getAllRoutes());
     }
 
