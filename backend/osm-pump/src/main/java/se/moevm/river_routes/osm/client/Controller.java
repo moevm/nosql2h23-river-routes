@@ -55,4 +55,11 @@ public class Controller {
         return ResponseEntity.ok(parseService.saveRoute(route));
     }
 
+    @PostMapping("/routes/import")
+    public ResponseEntity<?> importRoutes(@RequestBody List<RouteDataDTO> routes) {
+        log.info("import-routes");
+        routes.forEach(parseService::saveRoute);
+        return ResponseEntity.ok(parseService.getAllRoutes());
+    }
+
 }
