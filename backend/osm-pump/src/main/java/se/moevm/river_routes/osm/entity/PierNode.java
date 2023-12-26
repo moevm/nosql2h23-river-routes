@@ -30,4 +30,7 @@ public class PierNode {
     @Property("lon")
     private final Double lon;
 
+    @Property("address")
+    private final String address;
+
 }

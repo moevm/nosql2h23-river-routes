@@ -12,4 +12,5 @@ public class PierDataDTO {
     private Long id;
     private Double lat;
     private Double lon;
+    private String address;
 }

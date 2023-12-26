@@ -98,6 +98,7 @@ public class ParseServiceImpl implements ParseService {
                         .id(pierDataDTO.getId())
                         .lat(pierDataDTO.getLat())
                         .lon(pierDataDTO.getLon())
+                        .address(pierDataDTO.getAddress())
                         .build());
             });
         } catch (Exception e) {
