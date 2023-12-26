@@ -13,6 +13,7 @@ import se.moevm.river_routes.osm.services.OSMPumpService;
 import se.moevm.river_routes.osm.services.ParseService;
 import se.moevm.river_routes.osm.services.RouteService;
 
+import java.time.Instant;
 import java.time.OffsetDateTime;
 import java.util.*;
 
@@ -47,7 +48,7 @@ public class RouteServiceImpl implements RouteService {
                         .endPoint(end)
                         .sights(List.of(sight1, sight2, sight3))
                         .waterNodes(List.of(node1, node2, node3, node4, node5, node6))
-                        .createAt(new Date())
+                        .createAt(Date.from(Instant.parse("2023-12-20T07:23:18.013578Z")))
                         .build());
     }
 
