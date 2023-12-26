@@ -6,6 +6,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.web.bind.annotation.*;
+import se.moevm.river_routes.osm.dto.ImportRoutesRequest;
 import se.moevm.river_routes.osm.dto.RouteDataDTO;
 import se.moevm.river_routes.osm.dto.RouteRequest;
 import se.moevm.river_routes.osm.entity.PierNode;
@@ -56,9 +57,9 @@ public class Controller {
     }
 
     @PostMapping("/routes/import")
-    public ResponseEntity<?> importRoutes(@RequestBody List<RouteDataDTO> routes) {
+    public ResponseEntity<?> importRoutes(@RequestBody ImportRoutesRequest importRoutesRequest) {
         log.info("import-routes");
-        routes.forEach(parseService::saveRoute);
+        importRoutesRequest.getRoutes().forEach(parseService::saveRoute);
         return ResponseEntity.ok(parseService.getAllRoutes());
     }
 
