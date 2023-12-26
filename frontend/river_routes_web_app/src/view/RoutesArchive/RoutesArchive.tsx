@@ -23,11 +23,11 @@ import { useDebounce } from "@src/utils/useDebounce";
 import { exportFile, uploadFile } from "@src/utils/toolFunctions";
 import { Page } from "@src/components/Page/Page";
 import { useDispatch, useSelector } from "react-redux";
-import { getAllRoutes } from "@src/store/route/routeActions";
+import { getAllRoutes, importRoutes } from "@src/store/route/routeActions";
 
 const useStyles = makeStyles((theme) => ({
   tableCell: {
-    fontSize: 30,
+    fontSize: 20,
   },
   formControl: {
     minWidth: 120,
@@ -36,19 +36,21 @@ const useStyles = makeStyles((theme) => ({
 
 interface FormState {
   routeName: string;
-  date: string;
+  date1: string;
+  date2: string;
 }
 
 const defaultState = (): FormState => ({
   routeName: "",
-  date: "",
+  date1: "",
+  date2: "",
 });
 
 export const RoutesArchive = () => {
   const allRoutes: Route[] = useSelector((state: any) => state.route.allRoutes);
   // const [allRoutes, setAllRoutes] = useState<Route[]>(_allRoutes);
   const classes = useStyles();
-  const [form, setForm] = useState(defaultState());
+  const [form, setForm] = useState<FormState>(defaultState());
   const debouncedFilterValue = useDebounce(form, 200);
   const isLoadingRoutes = useSelector((state: any) => state.route.isLoadingRoutes);
   const debouncedIsLoadingRoutes = useDebounce(isLoadingRoutes, 300);
@@ -68,37 +70,44 @@ export const RoutesArchive = () => {
       dispatch<any>(getAllRoutes());
     } else {
       setFiltetedRoutes(allRoutes);
-      console.log("PIZDA");
     }
     console.log(allRoutes);
   }, [allRoutes]);
 
   const onFilterChangeHandler = (e: any) => {
     const { name, value } = e.target;
-    const newValue = name === "date" ? value.split("-").toString().replace(/,/g, ".") : value;
 
-    setForm((prevState) => ({ ...prevState, [name]: newValue }));
+    setForm((prevState) => ({ ...prevState, [name]: value }));
   };
 
   useEffect(() => {
     let endCoordinates = endPoint ? allRoutes.find((route) => route.id === endPoint) : null;
     let startCoordinates = startPoint ? allRoutes.find((route) => route.id === startPoint) : null;
 
+    const ifInRange = (d1: Date, d2: Date, curr: Date) => {
+      // console.log(curr.getTime(), d1.getTime(), d2.getTime());
+
+      return d1.getTime() && d2.getTime()
+        ? curr.getTime() >= d1.getTime() && curr.getTime() <= d2.getTime()
+        : d1.getTime()
+        ? curr.getTime() >= d1.getTime()
+        : curr.getTime() <= d2.getTime();
+    };
+
     if (allRoutes.length) {
       setFiltetedRoutes(
         allRoutes.filter(
           (elem) =>
-            elem.name.includes(debouncedFilterValue.routeName) &&
-            (debouncedFilterValue.date !== ""
-              ? elem.createAt.toString().split("T")[0].replace(/-/g, ".") == debouncedFilterValue.date
+            elem.name.toLowerCase().includes(debouncedFilterValue.routeName.toLowerCase()) &&
+            (debouncedFilterValue.date1 !== "" || debouncedFilterValue.date2 !== ""
+              ? ifInRange(
+                  new Date(debouncedFilterValue.date1),
+                  new Date(debouncedFilterValue.date2),
+                  new Date(elem.createAt),
+                )
               : true) &&
-            (startCoordinates
-              ? elem.startPoint.lat === startCoordinates.startPoint.lat &&
-                elem.startPoint.lon === startCoordinates.startPoint.lon
-              : true) &&
-            (endCoordinates
-              ? elem.endPoint.lat === endCoordinates.endPoint.lat && elem.endPoint.lon === endCoordinates.endPoint.lon
-              : true),
+            (startPoint ? elem.startPoint.address === startPoint : true) &&
+            (endPoint ? elem.endPoint.address === endPoint : true),
         ),
       );
     }
@@ -106,6 +115,7 @@ export const RoutesArchive = () => {
 
   const onImportHandler = async () => {
     const newData: Route[] = JSON.parse(await uploadFile());
+    dispatch<any>(importRoutes(newData));
     // setAllRoutes((prevState) => prevState.concat(newData));
   };
 
@@ -115,7 +125,7 @@ export const RoutesArchive = () => {
 
   return (
     <Page title={"Рекомендации"} description={"Ознакомьтесь с рекомендуемыми маршрутами"}>
-      <Container style={{ height: "100%" }}>
+      <Container>
         <section>
           <Grid container spacing={4} direction={"row"} alignItems={"center"} justifyContent={"space-between"}>
             <Grid item lg={4}>
@@ -148,11 +158,17 @@ export const RoutesArchive = () => {
                 >
                   <MenuItem value={null}>Все</MenuItem>
                   {allRoutes.length &&
-                    allRoutes.map((route, num) => (
-                      <MenuItem value={route.id} key={num}>
-                        {route.startPoint.lat},{route.startPoint.lon}
-                      </MenuItem>
-                    ))}
+                    allRoutes
+                      .reduce((res: Route[], currentValue, currentIndex) => {
+                        return res.find((elem) => elem.startPoint.address === currentValue.startPoint.address)
+                          ? res
+                          : [...res, currentValue];
+                      }, [])
+                      .map((route, num) => (
+                        <MenuItem value={route.startPoint.address} key={num}>
+                          {route.startPoint.address}
+                        </MenuItem>
+                      ))}
                 </Select>
               </FormControl>
             </Grid>
@@ -169,23 +185,40 @@ export const RoutesArchive = () => {
                 >
                   <MenuItem value={null}>Все</MenuItem>
                   {allRoutes.length &&
-                    allRoutes.map((route, num) => (
-                      <MenuItem value={route.id} key={num}>
-                        {route.endPoint.lat},{route.endPoint.lon}
-                      </MenuItem>
-                    ))}
+                    allRoutes
+                      .reduce((res: Route[], currentValue, currentIndex) => {
+                        return res.find((elem) => elem.endPoint.address === currentValue.endPoint.address)
+                          ? res
+                          : [...res, currentValue];
+                      }, [])
+                      .map((route, num) => (
+                        <MenuItem value={route.endPoint.address} key={num}>
+                          {route.endPoint.address}
+                        </MenuItem>
+                      ))}
                 </Select>
               </FormControl>
             </Grid>
 
-            <Grid item md={12} lg={3}>
-              <TextField
-                variant={"outlined"}
-                type={"date"}
-                name={"date"}
-                onChange={onFilterChangeHandler}
-                placeholder={"Дата создания"}
-              ></TextField>
+            <Grid item container md={12} lg={8} spacing={4}>
+              <Grid item lg={3}>
+                <TextField
+                  variant={"outlined"}
+                  type={"date"}
+                  name={"date1"}
+                  onChange={onFilterChangeHandler}
+                  placeholder={"Дата создания От"}
+                ></TextField>
+              </Grid>
+              <Grid item lg={3}>
+                <TextField
+                  variant={"outlined"}
+                  type={"date"}
+                  name={"date2"}
+                  onChange={onFilterChangeHandler}
+                  placeholder={"Дата создания До"}
+                ></TextField>
+              </Grid>
             </Grid>
             <Grid item md={12} lg={8}>
               <TextField
@@ -204,8 +237,8 @@ export const RoutesArchive = () => {
               <TableHead>
                 <TableRow>
                   <TableCell>Название маршрута</TableCell>
-                  <TableCell>Координаты начала</TableCell>
-                  <TableCell>Координаты конца</TableCell>
+                  <TableCell>Адрес начала</TableCell>
+                  <TableCell>Адрес конца</TableCell>
                   <TableCell>Дата создания</TableCell>
                 </TableRow>
               </TableHead>
@@ -215,12 +248,14 @@ export const RoutesArchive = () => {
                     <TableRow key={number} onClick={() => (window.location.href = `/routes/${route.id}`)}>
                       <TableCell className={classes.tableCell}>{route.name}</TableCell>
                       <TableCell className={classes.tableCell}>
-                        {route.startPoint.lat} {route.startPoint.lon}
+                        {route.startPoint.address}
                       </TableCell>
                       <TableCell className={classes.tableCell}>
-                        {route.endPoint.lat} {route.endPoint.lon}
+                        {route.endPoint.address}
                       </TableCell>
-                      <TableCell className={classes.tableCell}>{route.createAt.toString()}</TableCell>
+                      <TableCell className={classes.tableCell}>
+                        {route.createAt.toString().split("T")[0].split("-").reverse().toString().replace(/,/g, ".")}
+                      </TableCell>
                     </TableRow>
                   ))
                 ) : (

@@ -14,6 +14,10 @@ export const CREATE_ROUTE_R = "CREATE_ROUTE_R";
 
 export const GET_ALL_ROUTES_R = "GET_ALL_ROUTES_R";
 
+export const SAVE_NEW_ROUTES_R = "SAVE_NEW_ROUTES_R";
+
+export const SAVE_NEW_ROUTES = "SAVE_NEW_ROUTES";
+
 export interface Sight {
   id: number;
   title: string;
@@ -54,6 +58,7 @@ export interface Pierse {
   id: number;
   lat: number;
   lon: number;
+  address: string;
   waterNodes: WaterNode[];
 }
 
@@ -65,6 +70,7 @@ export interface DefaultState {
   isLoadingSights: boolean;
   isLoadingRoutes: boolean;
   isLoading: boolean;
+  saveProceeding: boolean;
   newId: number;
 }
 
@@ -86,6 +92,11 @@ export interface GetAllRoutes {
 export interface CreateRoute {
   type: typeof CREATE_ROUTE;
   payload: number;
+}
+
+export interface SaveRoutes {
+  type: typeof SAVE_NEW_ROUTES;
+  payload: Route[];
 }
 
 export type routeTypes = GetAllSights | DefaultState | GetAllPierses | CreateRoute;

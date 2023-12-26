@@ -9,6 +9,8 @@ import {
   GET_ALL_SIGHTS,
   GET_ALL_SIGHTS_R,
   routeTypes,
+  SAVE_NEW_ROUTES,
+  SAVE_NEW_ROUTES_R,
 } from "@src/store/route/routeTypes";
 import { stat } from "copy-webpack-plugin/types/utils";
 
@@ -20,6 +22,7 @@ const defaultState: DefaultState = {
   isLoadingSights: false,
   isLoadingRoutes: false,
   isLoading: false,
+  saveProceeding: false,
   newId: 0,
 };
 
@@ -41,6 +44,10 @@ export const routeReducer = (state = defaultState, action: any) => {
       return { ...state, isLoading: true };
     case GET_ALL_ROUTES_R:
       return { ...state, isLoadingRoutes: true };
+    case SAVE_NEW_ROUTES_R:
+      return { ...state, saveProceeding: true };
+    case SAVE_NEW_ROUTES:
+      return { ...state, allRoutes: action.payload, saveProceeding: false };
     default:
       return state;
   }

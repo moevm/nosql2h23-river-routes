@@ -1,9 +1,6 @@
 package se.moevm.river_routes.osm.dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 import java.util.List;
 
@@ -11,6 +8,7 @@ import java.util.List;
 @Data
 @Getter
 @Setter
+@NoArgsConstructor
 public class ImportRoutesRequest {
     private List<RouteDataDTO> routes;
 }

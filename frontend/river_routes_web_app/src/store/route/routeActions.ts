@@ -8,6 +8,9 @@ import {
   GetAllRoutes,
   GetAllSights,
   Pierse,
+  Route,
+  SAVE_NEW_ROUTES,
+  SaveRoutes,
   Sight,
 } from "@src/store/route/routeTypes";
 
@@ -86,3 +89,26 @@ export const createRoute =
       })
       .catch((e) => console.log(e));
   };
+
+export const importRoutes = (newRoutes: Route[]) => (dispatch: any) => {
+  const result: SaveRoutes = {
+    type: SAVE_NEW_ROUTES,
+    payload: null,
+  };
+  fetch("http://localhost:8081/routes/import", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      routes: [...newRoutes],
+    }),
+  })
+    .then((res) => res.json())
+    .then((_result) => {
+      // console.log(_result);
+      result.payload = _result;
+      return dispatch(result);
+    })
+    .catch((e) => console.log(e));
+};

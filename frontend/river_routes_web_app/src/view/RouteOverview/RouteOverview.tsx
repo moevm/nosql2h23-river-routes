@@ -16,7 +16,6 @@ export const RouteOverview = () => {
   const id = useParams();
 
   const _allRoutes: Route[] = useSelector((state: any) => state.route.allRoutes);
-  const [allRoutes, setAllRoutes] = useState<Route[]>(_allRoutes);
   const [currentRoute, setCurrentRoute] = useState<Route>(null);
   const dispatch = useDispatch();
   useEffect(() => {
@@ -36,7 +35,7 @@ export const RouteOverview = () => {
     <Page title={"О маршруте"} description={"Ознакомьтесь с информацие о маршруте"}>
       {_allRoutes.length && currentRoute ? (
         <Box display={"flex"} flexDirection={"column"} width={"100%"} padding={"4em"}>
-          <h3>Название водного маршрута</h3>
+          <h3>Название маршрута: {currentRoute.name}</h3>
           <Box display={"flex"} flexDirection={"row"} width={"100%"} justifyContent={"space-between"}>
             <Box display={"flex"} flexDirection={"column"} justifyContent={"space-evenly"}>
               <div>
@@ -142,6 +141,8 @@ export const RouteOverview = () => {
                   lon: currentRoute.startPoint.lon,
                   waterNodes: [],
                   wikiLink: "",
+                  title: "",
+                  updatedAt: null,
                 }}
                 onClickHandler={null}
                 isSelected={true}
@@ -154,6 +155,8 @@ export const RouteOverview = () => {
                   lon: currentRoute.endPoint.lon,
                   waterNodes: [],
                   wikiLink: "",
+                  title: "",
+                  updatedAt: null,
                 }}
                 onClickHandler={null}
                 isSelected={true}
