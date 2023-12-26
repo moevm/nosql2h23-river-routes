@@ -1,10 +1,6 @@
 package se.moevm.river_routes.osm.dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 import se.moevm.river_routes.osm.entity.PierNode;
 import se.moevm.river_routes.osm.entity.SightNode;
 import se.moevm.river_routes.osm.entity.WaterNode;
@@ -12,11 +8,12 @@ import se.moevm.river_routes.osm.entity.WaterNode;
 import java.util.Date;
 import java.util.List;
 
-@AllArgsConstructor
-@Data
 @Getter
 @Setter
 @Builder
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class RouteDataDTO {
     private Long id;
     private String name;
